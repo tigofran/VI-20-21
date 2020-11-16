@@ -10,6 +10,16 @@
   body{
     font-family: 'Roboto', sans-serif;
   }
+
+  .dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+}
   </style>
 </head>
 
@@ -19,6 +29,8 @@
 <!-- Initialize a select button -->
 <select id="selectButton"></select>
 
+<select id="secondSelectButton"></select>
+
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
 
@@ -27,6 +39,33 @@
 <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 <script src='heatmap.js'></script>
 
+<!-- <div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id= "selectButton">
+  <span class="caret"></span></button>
+  <ul id ="menu" class="dropdown-menu">
+    <li><a id= "value" tabindex="-1" href="#"></a></li>
+    <li class="dropdown-submenu">
+      <a class="test" tabindex="-1" href="#">New dropdown <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
+        <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('.dropdown-submenu a.test').on("click", function(e){
+      $(this).next('ul').toggle();
+      e.stopPropagation();
+      e.preventDefault();
+    });
+  });
+  </script> -->
 
 
 </body>
