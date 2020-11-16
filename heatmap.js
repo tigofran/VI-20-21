@@ -6,7 +6,7 @@ data = d3.csv(file, function(d) {
     season : d['Season'],
 	episode : d['Episode'],
 	killer : d['Killer'],
-	name : d['Name'],
+	character : d['Name'],
 	killershouse : d['Killers House'],
 	method : d['Method'],
 	gender : d['Gender'],
@@ -14,7 +14,7 @@ data = d3.csv(file, function(d) {
 	isAnimal : d['Is Animal']
   };
 }).then(function(data) {
-	var filterGroups = ['Default','Season','Books','Character','Killer\'s House', 'Killing Method',
+	var filterGroups = ['No Filter','Season','Books','Character','Killer\'s House', 'Killing Method',
 						'Gender','Nobility','Animals']
 	var totalByEpisode = [];
 	var selectedGroup;
@@ -30,8 +30,9 @@ data = d3.csv(file, function(d) {
 
 	var seasonData = d3.map(data, function(d){return d.season;})
 	var seasonValues = Array.from([...new Set(seasonData)]).sort();
+	seasonValues = ['1','2','3','4','5','6','7','8'];
 	var bookValues = ['GoT','CoK','SoS','FfC','DwD']
-	var characterData = d3.map(data, function(d){return d.name;})
+	var characterData = d3.map(data, function(d){return d.character;})
 	var characterValues = Array.from([...new Set(characterData)]).sort();
 	var killersHouseData = d3.map(data, function(d){return d.killershouse;})
 	var killershouseValues = Array.from([...new Set(killersHouseData)]).sort();
@@ -39,7 +40,7 @@ data = d3.csv(file, function(d) {
 	var methodValues = Array.from([...new Set(methodData)]).sort();
 	var genderValues = ['Female', 'Male'];
 	var nobilityValues = ['Noble','Peasant'];
-	var animalData = d3.map(data.filter(function(d) {return d.isAnimal == 1}), function(d){return d.name;})
+	var animalData = d3.map(data.filter(function(d) {return d.isAnimal == 1}), function(d){return d.character;})
 	var animalValues = Array.from([...new Set(animalData)]).sort();
 
 	
@@ -48,13 +49,16 @@ data = d3.csv(file, function(d) {
 
 
 	function createGroups(fil){
+		console.log(fil);
 		totalByEpisode = [];
+		if(selectedGroup == undefined)
+			fil = null;
 		if (fil == null)
 			epGroups = d3.group(data, d => d.season, d => d.episode)
 		else
 		epGroups = d3.group(data.filter(fil), d => d.season, d => d.episode)
 		var currentLocationIndex = 0
-		console.log(epGroups)
+		//console.log(epGroups)
 		epGroups.forEach( function (vals, key) {
 			summary_vals = vals.forEach( function (val2, key2) {
 				
@@ -82,21 +86,17 @@ data = d3.csv(file, function(d) {
 	}
 	createGroups(null);
 
-	function filtro(d){
-		return d;
-	}
-
-
     // When the button is changed, run the updateChart function
     d3.select("#selectButton").on("change", function(d) {
 		// recover the option that has been chosen
 		secondDropdown.selectAll('*').remove()
 		selectedGroup = d3.select(this).property("value");
-		if (selectedGroup == 'Default')
+		if (selectedGroup == 'No Filter')
 			selectedGroup = undefined;
 		d3.select('#secondSelectButton').style('visibility',function(d) {
-			if (selectedGroup != undefined) return 'visible'; else return 'hidden';})
-			.selectAll()
+			if (selectedGroup != undefined) return 'visible'; else return 'hidden';});
+		if(selectedGroup != undefined){
+			d3.select('#secondSelectButton').selectAll()
 			.data(function() {
 				switch(selectedGroup){
 					case 'Season':
@@ -123,20 +123,24 @@ data = d3.csv(file, function(d) {
 					case 'Animals':
 						return animalValues;
 						break;
-				}
 
+				}
 			})
 			.enter()
 			.append('option')
 			.text(function (d) { return d; }) // text showed in the menu
 			.attr("value", function (d) { return d; }) // corresponding value returned by the button
         // run the updateChart function with this selected option
-        updateHeatmap(selectedGroup)
+		//updateHeatmap(selectedGroup,selectedSecond)
+		}
+		else
+			updateHeatmap(selectedGroup,null) //caso a opcao seja No Filter
 	})
 	
 	d3.select("#secondSelectButton").on("change", function(d) {
 		// recover the option that has been chosen
 		selectedSecond = d3.select(this).property("value");
+		updateHeatmap(selectedGroup,selectedSecond)
 	})
 
 	// Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
@@ -149,7 +153,7 @@ data = d3.csv(file, function(d) {
 	  width = 500 - margin.left - margin.right,
 	  height = 500 - margin.top - margin.bottom;
 
-	var svg = d3.select("body").append("svg")
+	var svg = d3.select("#heatmap").append("svg")
      .attr("width", width + margin.left + margin.right)
      .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -235,33 +239,38 @@ data = d3.csv(file, function(d) {
 	subtitley = titley + 25
 
 	// // add the squares
-	var heatmap = svg.selectAll()
-	.data(totalByEpisode)
-	.enter()
-	.append("rect")
-	  .attr("x", function(d) { return x(d.episode) })
-	  .attr("y", function(d) { return y(d.season) })
-	  .attr("rx", 4)
-	  .attr("ry", 4)
-	  .attr("width", x.bandwidth() )
-	  .attr("height", y.bandwidth() )
-	  .style("fill", function(d) {
-		if (d.val == undefined) return "#888888";
-		else return myColor(d.val)} )
-	  .style("stroke-width", 4)
-	  .style("stroke", "none")
-	  .style("opacity", 0.8)
-	.on("mouseover",mouseover)
-	.on("mousemove", mousemove)
-	.on("mouseleave", mouseleave)
+	function createHeatmap(){
+		heatmap = svg.selectAll()
+		.data(totalByEpisode)
+		.enter()
+		.append("rect")
+		.attr("x", function(d) { return x(d.episode) })
+		.attr("y", function(d) { return y(d.season) })
+		.attr("rx", 4)
+		.attr("ry", 4)
+		.attr("width", x.bandwidth() )
+		.attr("height", y.bandwidth() )
+		.style("fill", function(d) {
+			if (d.val == undefined) return "#888888";
+			else return myColor(d.val)} )
+		.style("stroke-width", 4)
+		.style("stroke", "none")
+		.style("opacity", 0.8)
+		.on("mouseover",mouseover)
+		.on("mousemove", mousemove)
+		.on("mouseleave", mouseleave)
 
-	// // Add title to graph
-	svg.append("text")
-	  .attr("x", titlex)
-	  .attr("y", titley)
-	  .attr("text-anchor", "middle")
-	  .style("font-size", "22px")
-	  .text("Deaths in Game of Thrones");
+		// // Add title to graph
+		svg.append("text")
+		.attr("x", titlex)
+		.attr("y", titley)
+		.attr("text-anchor", "middle")
+		.style("font-size", "22px")
+		.text("Deaths in Game of Thrones");
+
+	  }
+	
+	  createHeatmap();
 
 	// // // Add subtitle to graph
 	// svg.append("text")
@@ -297,30 +306,40 @@ data = d3.csv(file, function(d) {
 	.text("Season");
 
 	 // A function that update the chart
-	 function updateHeatmap(selectedGroup) {
+	 function updateHeatmap(selectedGroup,selectedSecond) {
 
 		// Create new data with the selection?
-		var dataFilter = createGroups(function(d){ return d.killer == selectedGroup;});
-		//console.log(dataFilter)
+		console.log(selectedGroup);
+		var dataFilter = createGroups(function(d){ 
+			if (selectedGroup == undefined){
+				return null;
+			}
+			else			
+				return d[selectedGroup.toLowerCase()] == selectedSecond;});
+		console.log(dataFilter)
 		// Give these new data to update line
-		heatmap
+		// heatmap.remove();
+		// svg = createHeatmap();
+		svg.selectAll("rect")
 			.data(dataFilter)
+			.join("rect")
 			.transition()
 			.duration(1000)
+			.style("fill", function(d) {
+			  if (d.val == undefined) return "#888888";
+			  else return myColor(d.val);} )
 			.attr("x", function(d) { return x(d.episode) })
 			.attr("y", function(d) { return y(d.season) })
 			.attr("rx", 4)
 			.attr("ry", 4)
 			.attr("width", x.bandwidth() )
 			.attr("height", y.bandwidth() )
-			.style("fill", function(d) {
-			  if (d.val == undefined) return "#888888";
-			  else return myColor(d.val)} )
 			.style("stroke-width", 4)
 			.style("stroke", "none")
 			.style("opacity", 0.8)
-			// .on("mouseover",mouseover)
+			//.on("mouseover",mouseover)
 			// .on("mousemove", mousemove)
 			// .on("mouseleave", mouseleave)
+			//console.log(heatmap);
 	  }
 });
