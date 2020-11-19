@@ -20,6 +20,53 @@
   left: 100%;
   margin-top: -1px;
 }
+
+.switch-field {
+	display: flex;
+  position: ; 
+  white-space:nowrap;
+	margin-bottom: 36px;
+	overflow: hidden;
+}
+
+.switch-field input {
+	position: absolute !important;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	width: 1px;
+	border: 0;
+	overflow: hidden;
+}
+
+.switch-field label {
+	background-color: #e4e4e4;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 14px;
+	line-height: 1;
+	text-align: center;
+	padding: 8px 16px;
+	margin-right: -1px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	transition: all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+	cursor: pointer;
+}
+
+.switch-field input:checked + label {
+	background-color: #dc8686;
+	box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+	border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+	border-radius: 0 4px 4px 0;
+}
   </style>
 </head>
 
@@ -30,6 +77,15 @@
 <select id="selectButton"></select>
 
 <select id="secondSelectButton"></select>
+
+<form class="switch">
+	<div class="switch-field">
+		<input type="radio" id="radiodeaths" name="switch-one" value="yes" checked/>
+		<label for="radiodeaths" id="radiodeathslabel">Deaths</label>
+		<input type="radio" id="radiokills" name="switch-one" value="0"/>
+		<label for="radiokills" id="radiokillslabel">Kills</label>
+	</div>
+
 
 <!-- Create a div where the graph will take place -->
 <div id="heatmap"></div>
