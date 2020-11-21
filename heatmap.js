@@ -77,15 +77,24 @@ data = d3.csv(file, function(d) {
 	})
 
 
-	function createGroups(fil){
-		//console.log(fil);
+	function createGroups(fil,fil2){
 		totalByEpisode = [];
-		if(selectedGroup == undefined)
-			fil = null;
-		if (fil == null)
+		if(selectedGroup == undefined && clickedRect == undefined){
+			console.log("SG0 CR0");
 			epGroups = d3.group(data, d => d.season, d => d.episode)
-		else
-		epGroups = d3.group(data.filter(fil), d => d.season, d => d.episode)
+		}
+		else if (selectedGroup == undefined && clickedRect != undefined){
+			console.log("SG0 CR1");
+			epGroups = d3.group(data.filter(fil), d => d.season, d => d.episode)
+		}
+		else if (selectedGroup != undefined && clickedRect == undefined){
+			console.log("SG1 CR0");
+			epGroups = d3.group(data.filter(fil2), d => d.season, d => d.episode)
+		}
+		else{
+			console.log("SG1 CR1");
+			epGroups = d3.group(data.filter(fil).filter(fil2), d => d.season, d => d.episode)
+		}
 		epGroups.forEach( function (vals, key) {
 			summary_vals = vals.forEach( function (val2, key2) {
 				currentSeason = key;
@@ -124,13 +133,13 @@ data = d3.csv(file, function(d) {
 			//updateHeatmap acontece no segundo dropdown
 		}
 		else
-			updateHeatmap(selectedGroup,null) //caso a opcao seja No Filter
+			updateHeatmap() //caso a opcao seja No Filter
 	})
 	
 	d3.select("#secondSelectButton").on("change", function(d) {
 		// recover the option that has been chosen
 		selectedSecond = d3.select(this).property("value");
-		updateHeatmap(selectedGroup,selectedSecond)
+		updateHeatmap()
 	})
 
 	// Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
@@ -196,10 +205,13 @@ data = d3.csv(file, function(d) {
 	// // Three functions that change the tooltip when user hover / move / leave a cell
 
 	function mouseover(d){
+	var strokecolor = d.target.style.stroke;
 	  tooltip
 	    .style("opacity", 1)
 	  d3.select(this)
-	    .style("stroke", "black")
+	  .style("stroke", function(d){
+		return (strokecolor == 'green') ? 'green' : 'black';
+	})
 	    //.html("The exact value of<br>this cell is: " + d)
 		  //.style('left', d.screenX + 'px')
 		  //.style('top', d.screenY + 'px')
@@ -207,8 +219,8 @@ data = d3.csv(file, function(d) {
 	}
 	function mousemove(d){
 		if (d.target.className.baseVal == "ebd"){
-			tooltip.html("Estimated Book Death Season: " + d.target.__data__.ebds + "<br>" + 
-			"Estimated Book Death Episode: " + d.target.__data__.ebde)
+			tooltip.html("Approximate Book Death Season: " + d.target.__data__.ebds + "<br>" + 
+			"Approximate Book Death Episode: " + d.target.__data__.ebde)
 			.style('left', d.screenX + 'px')
 			.style('top', d.screenY + 'px')
 		}
@@ -229,6 +241,7 @@ data = d3.csv(file, function(d) {
 		}
 	}
 	function mouseleave(d){
+		var strokecolor = d.fromElement.style.stroke;
 		if (d.target.className.baseVal == "ebd"){
 			tooltip
 			.style("opacity", 0)
@@ -240,9 +253,56 @@ data = d3.csv(file, function(d) {
 		tooltip
 			.style("opacity", 0)
 		d3.select(this)
-			.style("stroke", "none")
+			.style("stroke", function(d){
+				return (strokecolor == 'green') ? 'green' : 'none';
+			})
 			.style("opacity", 0.8)
 		}
+	}
+
+	var clickedSeason;
+	var clickedEpisode;
+	var previousRect;
+	var selectedRect;
+	var clickedRect;
+	var isClickReset = true;
+	function rectClick(d){
+		clickedRect = d.target;
+		isClickReset = !isClickReset;
+		if (clickedRect.__data__.val != undefined){
+			previousRect = selectedRect;
+			selectedRect = d3.select(this)
+			console.log(selectedRect)
+			console.log(previousRect)
+			selectedRect.style("stroke", function(d){
+				if (previousRect != undefined){
+					console.log("SS:" + selectedRect._groups[0][0].__data__.season + " SE:" + selectedRect._groups[0][0].__data__.episode + " PS:" + previousRect._groups[0][0].__data__.season + " PE:" + previousRect._groups[0][0].__data__.episode)
+					if (selectedRect._groups[0][0].__data__.season == previousRect._groups[0][0].__data__.season
+						&& selectedRect._groups[0][0].__data__.episode == previousRect._groups[0][0].__data__.episode){ //same button
+							clickedColor = clickedRect.style.stroke
+							if (isClickReset == true){
+								clickedRect = undefined;
+							}
+							console.log("Same button")
+							return (clickedColor != 'green') ? 'green' : 'none'; //toggle color if same rect was selected
+					}
+					else{ //selected a different rectangle
+						console.log("Different button")
+						previousRect._groups[0][0].style.stroke = 'none'; //deselect last one clicked
+						return (clickedRect.style.stroke != 'green') ? 'green' : 'none'; //toggle color if same rect was selected
+					}
+				}
+				else{ //button clicked the first time
+					console.log("First button")
+					return (clickedRect.style.stroke != 'green') ? 'green' : 'none'; 
+				}
+			})
+		if (clickedRect != undefined){
+			clickedSeason = clickedRect.__data__.season;
+			clickedEpisode = clickedRect.__data__.episode;
+		}
+	}
+	updateHeatmap();
 	}
 
 	titlex = width / 2
@@ -270,6 +330,7 @@ data = d3.csv(file, function(d) {
 		.on("mouseover",mouseover)
 		.on("mousemove", mousemove)
 		.on("mouseleave", mouseleave)
+		.on("click",rectClick)
 
 		// // Add title to graph
 		title = svg.append("text")
@@ -319,6 +380,12 @@ data = d3.csv(file, function(d) {
 	.attr("transform", "rotate(-90)")
 	.text("Season");
 
+	function filterClick(d,se){
+		if (clickedRect != undefined){
+			return d.season == se[0] && d.episode == se[1];
+		}
+	}
+
 	function filterData(d){
 		switch(selectedGroup){
 			case undefined:
@@ -361,19 +428,22 @@ data = d3.csv(file, function(d) {
 		}
 	}
 
+	var clickFilter;
+	var menuFilter;
+
 	 // A function that update the chart
 	 function updateHeatmap() {
-
 		// Create new data with the selection?
-		var dataFilter = createGroups(function(d){ 
-			return filterData(d);});
+		if (clickedRect != undefined){
+			clickFilter = function(d){return filterClick(d,[clickedSeason,clickedEpisode]);}
+			console.log("CLICK: " +  clickFilter);
+		}
+		if (selectedGroup != undefined){
+			menuFilter = function(d){return filterData(d,[clickedSeason,clickedEpisode]);}
+			console.log("MENU: " +  menuFilter);
+		}
+		var dataFilter = createGroups(clickFilter,menuFilter);
 		setColorDomain(dataFilter);
-		// var myColor = d3.scaleSequentialLog()
-		// .interpolator(d3.interpolateReds)
-		// .domain([min,max])     //retirar isto e setColorDomain caso a escala seja global
-		// Give these new data to update line
-		// heatmap.remove();
-		// svg = createHeatmap();
 		squares = svg.selectAll("rect")
 			.data(dataFilter)
 			.join("rect")
@@ -394,11 +464,11 @@ data = d3.csv(file, function(d) {
 		squares.on("mouseover",mouseover) //depois do transition é preciso chamar squares outra vez
 		squares.on("mousemove", mousemove)
 		squares.on("mouseleave", mouseleave)
+		squares.on("click", rectClick)
 		
 		if(selectedGroup == 'Character' && totalByEpisode[0].info != -1){
 			ebdSeason = totalByEpisode[0].info[0].estimatedBookDeathSeason;
 			ebdEpisode = totalByEpisode[0].info[0].estimatedBookDeathEpisode;
-			console.log("EBDS: " + ebdSeason + "EBDE: " + ebdEpisode);
 			if (ebdSeason > -1 && ebdEpisode > -1){
 				svg.append("rect")
 					.data([{ebds: ebdSeason, ebde: ebdEpisode}])
