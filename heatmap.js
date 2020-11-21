@@ -73,26 +73,25 @@ data = d3.csv(file, function(d) {
 		currentLabel = "Kills";
 		updateTitle();
 		updateHeatmap();
-		//console.log(radiodeaths.node().checked);
 	})
 
 
 	function createGroups(fil,fil2){
 		totalByEpisode = [];
 		if(selectedGroup == undefined && clickedRect == undefined){
-			console.log("SG0 CR0");
+			// console.log("SG0 CR0");
 			epGroups = d3.group(data, d => d.season, d => d.episode)
 		}
 		else if (selectedGroup == undefined && clickedRect != undefined){
-			console.log("SG0 CR1");
+			// console.log("SG0 CR1");
 			epGroups = d3.group(data.filter(fil), d => d.season, d => d.episode)
 		}
 		else if (selectedGroup != undefined && clickedRect == undefined){
-			console.log("SG1 CR0");
+			// console.log("SG1 CR0");
 			epGroups = d3.group(data.filter(fil2), d => d.season, d => d.episode)
 		}
 		else{
-			console.log("SG1 CR1");
+			// console.log("SG1 CR1");
 			epGroups = d3.group(data.filter(fil).filter(fil2), d => d.season, d => d.episode)
 		}
 		epGroups.forEach( function (vals, key) {
@@ -124,8 +123,10 @@ data = d3.csv(file, function(d) {
 		// recover the option that has been chosen
 		secondDropdown.selectAll('*').remove()
 		selectedGroup = d3.select(this).property("value"); //value of first dropdown
-		if (selectedGroup == 'No Filter')
+		if (selectedGroup == 'No Filter'){
 			selectedGroup = undefined;
+			menuFilter = undefined;
+		}
 		d3.select('#secondSelectButton').style('visibility',function(d) {
 			return (selectedGroup != undefined) ? 'visible' : 'hidden';}); //hide second menu in case of NoFilter
 		if(selectedGroup != undefined){
@@ -262,47 +263,32 @@ data = d3.csv(file, function(d) {
 
 	var clickedSeason;
 	var clickedEpisode;
-	var previousRect;
-	var selectedRect;
-	var clickedRect;
-	var isClickReset = true;
+	var previousRectSeason;
+	var previousRectEpisode;
+	var selectedRectSeason;
+	var selectedRectEpisode;
+	var clickedRect; //keep clicked rectangle
+	var isClickReset = true; //check if rectangle is clicked
+
 	function rectClick(d){
 		clickedRect = d.target;
-		isClickReset = !isClickReset;
+		isClickReset = !isClickReset; //toggle clicked same button
 		if (clickedRect.__data__.val != undefined){
-			previousRect = selectedRect;
-			selectedRect = d3.select(this)
-			console.log(selectedRect)
-			console.log(previousRect)
-			selectedRect.style("stroke", function(d){
-				if (previousRect != undefined){
-					console.log("SS:" + selectedRect._groups[0][0].__data__.season + " SE:" + selectedRect._groups[0][0].__data__.episode + " PS:" + previousRect._groups[0][0].__data__.season + " PE:" + previousRect._groups[0][0].__data__.episode)
-					if (selectedRect._groups[0][0].__data__.season == previousRect._groups[0][0].__data__.season
-						&& selectedRect._groups[0][0].__data__.episode == previousRect._groups[0][0].__data__.episode){ //same button
-							clickedColor = clickedRect.style.stroke
-							if (isClickReset == true){
-								clickedRect = undefined;
-							}
-							console.log("Same button")
-							return (clickedColor != 'green') ? 'green' : 'none'; //toggle color if same rect was selected
-					}
-					else{ //selected a different rectangle
-						console.log("Different button")
-						previousRect._groups[0][0].style.stroke = 'none'; //deselect last one clicked
-						return (clickedRect.style.stroke != 'green') ? 'green' : 'none'; //toggle color if same rect was selected
-					}
-				}
-				else{ //button clicked the first time
-					console.log("First button")
-					return (clickedRect.style.stroke != 'green') ? 'green' : 'none'; 
-				}
-			})
-		if (clickedRect != undefined){
-			clickedSeason = clickedRect.__data__.season;
-			clickedEpisode = clickedRect.__data__.episode;
+			previousRectSeason = selectedRectSeason;
+			previousRectEpisode = selectedRectEpisode;
+			var selectedRect = d3.select(this)
+			selectedRectSeason = selectedRect._groups[0][0].__data__.season;
+			selectedRectEpisode = selectedRect._groups[0][0].__data__.episode;
+			if (isClickReset == true){
+				clickedRect = undefined;
+				clickFilter = undefined;
+			}
+			if (clickedRect != undefined){
+				clickedSeason = clickedRect.__data__.season;
+				clickedEpisode = clickedRect.__data__.episode;
+			}
+		updateHeatmap();
 		}
-	}
-	updateHeatmap();
 	}
 
 	titlex = width / 2
@@ -428,20 +414,20 @@ data = d3.csv(file, function(d) {
 		}
 	}
 
-	var clickFilter;
-	var menuFilter;
+	var clickFilter; //current filter created by clicking 
+	var menuFilter; //current filter created by menu
 
 	 // A function that update the chart
 	 function updateHeatmap() {
 		// Create new data with the selection?
 		if (clickedRect != undefined){
 			clickFilter = function(d){return filterClick(d,[clickedSeason,clickedEpisode]);}
-			console.log("CLICK: " +  clickFilter);
 		}
 		if (selectedGroup != undefined){
 			menuFilter = function(d){return filterData(d,[clickedSeason,clickedEpisode]);}
-			console.log("MENU: " +  menuFilter);
 		}
+		console.log(clickFilter);
+		console.log(menuFilter);
 		var dataFilter = createGroups(clickFilter,menuFilter);
 		setColorDomain(dataFilter);
 		squares = svg.selectAll("rect")
