@@ -68,11 +68,13 @@ data = d3.csv(file, function(d) {
 		currentLabel = "Deaths";
 		updateTitle();
 		updateHeatmap();
+		updateTreemap();
 	})
 	var radiokills = d3.select("#radiokills").on("change", function(d){
 		currentLabel = "Kills";
 		updateTitle();
 		updateHeatmap();
+		updateTreemap();
 	})
 
 
@@ -133,14 +135,17 @@ data = d3.csv(file, function(d) {
 			updateSecondDropdown(); //yupdate values on second dropdown menu
 			//updateHeatmap acontece no segundo dropdown
 		}
-		else
+		else{
 			updateHeatmap() //caso a opcao seja No Filter
+			updateTreemap()
+		}
 	})
 	
 	d3.select("#secondSelectButton").on("change", function(d) {
 		// recover the option that has been chosen
 		selectedSecond = d3.select(this).property("value");
 		updateHeatmap()
+		updateTreemap()
 	})
 
 	// Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
@@ -263,6 +268,7 @@ data = d3.csv(file, function(d) {
 
 	var clickedSeason;
 	var clickedEpisode;
+	var clickedMethod;
 	var previousRectSeason;
 	var previousRectEpisode;
 	var selectedRectSeason;
@@ -288,6 +294,7 @@ data = d3.csv(file, function(d) {
 				clickedEpisode = clickedRect.__data__.episode;
 			}
 		updateHeatmap();
+		updateTreemap();
 		}
 	}
 
@@ -366,10 +373,14 @@ data = d3.csv(file, function(d) {
 	.attr("transform", "rotate(-90)")
 	.text("Season");
 
-	function filterClick(d,se){
+	function filterClick(d){
 		if (clickedRect != undefined){
-			return d.season == se[0] && d.episode == se[1];
+			if (clickedSeason != undefined)
+				return d.season == clickedSeason && d.episode == clickedEpisode;
+			else if (clickedMethod != undefined)
+				return d.method == clickedMethod;
 		}
+
 	}
 
 	function filterData(d){
@@ -421,10 +432,10 @@ data = d3.csv(file, function(d) {
 	 function updateHeatmap() {
 		// Create new data with the selection?
 		if (clickedRect != undefined){
-			clickFilter = function(d){return filterClick(d,[clickedSeason,clickedEpisode]);}
+			clickFilter = function(d){return filterClick(d);}
 		}
 		if (selectedGroup != undefined){
-			menuFilter = function(d){return filterData(d,[clickedSeason,clickedEpisode]);}
+			menuFilter = function(d){return filterData(d);}
 		}
 		console.log(clickFilter);
 		console.log(menuFilter);
@@ -517,6 +528,8 @@ data = d3.csv(file, function(d) {
 
 	/////////////////////////////////////////////////////////////////
 
+	var methodTreeData = [];
+
 	//get the count of each method
 	function rollup(arr) {
 		var a = [], b = [], prev;
@@ -540,7 +553,7 @@ data = d3.csv(file, function(d) {
 		height = 400 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
-	var svg = d3.select("#tree_map")
+	var svg2 = d3.select("#tree_map")
 				.append("svg")
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
@@ -559,10 +572,12 @@ data = d3.csv(file, function(d) {
 		.style("padding", "5px")
 
 	function mouseover2(d){
-		tooltip2
-			.style("opacity", 1)
-		d3.select(this)
-			.style("stroke", 'black');
+		if (d.target.__data__.data.value){
+			tooltip2
+				.style("opacity", 1)
+			d3.select(this)
+				.style("stroke", 'black');
+		}
 	}
 
 	function mousemove2(d){
@@ -577,9 +592,54 @@ data = d3.csv(file, function(d) {
 		d3.select(this)
 			.style("stroke", 'none');
 	}
+
+	var previousRectMethod, selectedRectMethod;
+
+	function rectClick2(d){		
+		if (d.target.__data__.data.value != undefined){
+			clickedRect = d.target;
+			previousRectMethod = selectedRectMethod;
+
+			var selectedRect = d3.select(this)
+			selectedRectMethod = selectedRect._groups[0][0].__data__.data.Method;
+			if (previousRectMethod == selectedRectMethod){
+				clickedRect = undefined;
+				clickFilter = undefined;
+				clickedMethod = undefined;
+			}else{
+				clickedEpisode = undefined;
+				clickedSeason = undefined;
+				clickedMethod = clickedRect.__data__.data.Method;
+			}
+			console.log(clickedMethod)
+			updateHeatmap();
+			updateTreemap();
+		}
+	}
+
+	function createFilterTree(fil, fil2){
+		if(selectedGroup == undefined && clickedRect == undefined){
+			return data;
+		}
+		else if (selectedGroup == undefined && clickedRect != undefined){
+			return data.filter(fil);
+		}
+		else if (selectedGroup != undefined && clickedRect == undefined){
+			return data.filter(fil2);
+		}
+		else{
+			return data.filter(fil).filter(fil2);
+		}
+	}
 	
 	function createTreemap(){
-		var result = rollup(methodData);
+		methodTreeData = [];
+		var dataTree = createFilterTree(clickFilter,menuFilter);
+		//console.log(dataTree)
+		d3.map(dataTree, function(d) { 
+			methodTreeData.push(d.method);})
+
+		var result = rollup(methodTreeData);
 
 		var objs = [];
 		var elem = [];
@@ -597,14 +657,14 @@ data = d3.csv(file, function(d) {
 		//generate tree structure
 		var listTree = [];
 		var obj = [];
-		obj["Method"] = "Origin";
+		obj["Method"] = "No method";
 		obj["parent"] = "";
-		obj["value"] = "";
+		obj["value"] = undefined;
 		listTree.push(obj);
 		for (var i=0; i<objs.length; i++){
 			obj = [];
 			obj["Method"] = objs[i][0];
-			obj["parent"] = "Origin";
+			obj["parent"] = "No method";
 			obj["value"] = objs[i][1];
 			listTree.push(obj);
 		}
@@ -626,62 +686,75 @@ data = d3.csv(file, function(d) {
 		rootLeaves = root.leaves();
 
 		console.log(rootLeaves)
-		//add rectangles
-		svg
-			.selectAll("rect")
-			.data(rootLeaves)
-			.enter()
-			.append("rect")
-			.attr('x', function (d) { return d.x0; })
-			.attr('y', function (d) { return d.y0; })
-			.attr('width', function (d) { return d.x1 - d.x0; })
-			.attr('height', function (d) { return d.y1 - d.y0; })
-			//.style("stroke", "black")
-			.style("fill", "#69b3a2")
-			.on("mouseover",mouseover2)
-			.on("mousemove", mousemove2)
-			.on("mouseleave", mouseleave2);
-	
-		//add text labels
-		svg
-			.selectAll("text")
-			.data(rootLeaves)
-			.enter()
-			.append("text")
-			.attr("x", function(d){ return d.x0+10})    // +10 to adjust position (right)
-			.attr("y", function(d){ return d.y0+20})    // +20 to adjust position (down)
-			.text(function(d){ return d.data.Method})
-			.attr("font-family", "Roboto")
-			.attr("font-size", "15px")
-			.attr("fill", "white");
 		return rootLeaves;
 	}
-  
-  	rootLeaves = createTreemap();
+
+	rootLeaves = createTreemap();
+	
+	//add rectangles
+	svg2
+		.selectAll("rect")
+		.data(rootLeaves)
+		.enter()
+		.append("rect")
+		.attr('x', function (d) { return d.x0; })
+		.attr('y', function (d) { return d.y0; })
+		.attr('width', function (d) { return d.x1 - d.x0; })
+		.attr('height', function (d) { return d.y1 - d.y0; })
+		//.style("stroke", "black")
+		.style("fill", function(d) {
+			return myColor(d.value)} )
+		.on("mouseover",mouseover2)
+		.on("mousemove", mousemove2)
+		.on("mouseleave", mouseleave2)
+		.on("click",rectClick2);
+
+	//add text labels
+	svg2
+		.selectAll("text")
+		.data(rootLeaves)
+		.enter()
+		.append("text")
+		.attr("x", function(d){ return d.x0+10})    // +10 to adjust position (right)
+		.attr("y", function(d){ return d.y0+20})    // +20 to adjust position (down)
+		.text(function(d){ return d.data.Method})
+		.attr("font-size", "15px")
+		.attr("fill", function(d) {
+			if (d.value > 50){
+				return "white"
+			}
+			return "black" });
 
 	function updateTreemap() {
 
-		methodData = methodData.filter(function(str) { return str.indexOf('Dragonfire (Dragon)') === -1; });
+		if (clickedRect != undefined){
+			clickFilter = function(d){return filterClick(d);}
+		}
+		if (selectedGroup != undefined){
+			menuFilter = function(d){return filterData(d);}
+		}
 
 		var root = createTreemap();
 		//console.log(root.leaves())
 
-		squares = svg.selectAll("rect")
+		squares2 = svg2.selectAll("rect")
 			.data(rootLeaves)
 			.join("rect")
-		squares.transition()
+		squares2.transition()
 			.duration(1000)
 			.attr('x', function (d) { return d.x0; })
 			.attr('y', function (d) { return d.y0; })
 			.attr('width', function (d) { return d.x1 - d.x0; })
 			.attr('height', function (d) { return d.y1 - d.y0; })
-		squares//.style("stroke", "black")
-			.style("fill", "#69b3a2")
+		squares2//.style("stroke", "black")
+			.style("fill", function(d) {
+			return myColor(d.value)} )
 			.on("mouseover",mouseover2)
 			.on("mousemove", mousemove2)
-			.on("mouseleave", mouseleave2);
+			.on("mouseleave", mouseleave2)
+			.on("click",rectClick2);
 
-		text = svg.selectAll("text")
+		text = svg2.selectAll("text")
 			.data(rootLeaves)
 			.join("text")
 		text.transition()
@@ -689,20 +762,12 @@ data = d3.csv(file, function(d) {
 			.attr("x", function(d){ return d.x0+10})    // +10 to adjust position (right)
 			.attr("y", function(d){ return d.y0+20})    // +20 to adjust position (down)
 			.text(function(d){ return d.data.Method})
-			.attr("font-family", "Roboto")
 			.attr("font-size", "15px")
-			.attr("fill", "white");
+			.attr("fill", function(d) {
+				if (d.value > 50){
+					return "white"
+				}
+				return "black" });
 	}
-	var waited = 0;
-	var check = function(){
-		if(waited){
-			updateTreemap();
-		}
-		else {
-			setTimeout(check, 2000); // check again in a second
-			waited = 1;
-		}
-	}	
-	check();
 });
 
