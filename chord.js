@@ -318,7 +318,8 @@ var group = g.append("g")
   .data(function(chords) { return chords.groups; })
   .enter().append("g")
   .on("mouseover", fade(.1))
-  .on("mouseout", fade(1));
+  .on("mouseout", fade(1))
+  .on("click", function(){console.log("BOAS")});
 
 group.append("path")
     .style("fill", function(d) { return color(d.index); })
