@@ -6,7 +6,7 @@ var matrixData={
   " Brotherhood Without Banners ":
   [0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ,
   " Children of the Forest ":
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ,
+  [0, 0, 0, 0.00000000000000000000000000000000000000000000001, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ,
   " Jaqen H'ghar ":
   [0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ,
   " Faith Militant ":
@@ -269,12 +269,22 @@ matrix= Object.values(matrixData);
 matrixKeys = Object.keys(matrixData);
 
 var width="1000", height="1000";
-var svg = d3.select("#chord")
+var svg3 = d3.select("#chord")
   .append("svg")
     .attr("width", width)
     .attr("height", height)
   .append("g")
     .attr("transform", "translate(0,0)");
+
+var tooltip3 = d3.select("body")
+  .append("div")
+  .style("opacity", 0)
+  .attr("class", "tooltip")
+  .style("background-color", "white")
+  .style("border", "solid")
+  .style("border-width", "2px")
+  .style("border-radius", "5px")
+  .style("padding", "5px");
 
 var outerRadius = Math.min(width, height) * 0.5 - 150;
 var innerRadius = outerRadius - 30;
@@ -297,7 +307,7 @@ var color = d3.scaleOrdinal()
     .domain(d3.range(4))
     .range(colors);
 
-var g = svg.append("g")
+var g = svg3.append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
     .datum(chord(matrix));
 
@@ -307,12 +317,17 @@ var group = g.append("g")
   .selectAll("g")
   .data(function(chords) { return chords.groups; })
   .enter().append("g")
-  ;
+  .on("mouseover", fade(.1))
+  .on("mouseout", fade(1));
 
 group.append("path")
     .style("fill", function(d) { return color(d.index); })
     .style("stroke", function(d) { return d3.rgb(color(d.index)).darker(); })
-    .attr("d", arc);
+    .attr("d", arc)
+    .on("mouseover", fade(.1))
+    .on("mouseover", showTooltip())
+    .on("mouseout", fade(1))
+    .on("mouseout", hideTooltip());
 
 var groupTick = group.selectAll(".group-tick")
   .data(function(d) { return groupTicks(d, 1e3); })
@@ -320,36 +335,41 @@ var groupTick = group.selectAll(".group-tick")
     .attr("class", "group-tick")
     .attr("transform", function(d) { 
       return "rotate(" + (d.angle * 180 / Math.PI - 90) + 
-        ") translate(" + outerRadius + ",2)"; 
+        ") translate(" + outerRadius + ",2)";
     });
 
 groupTick.append("line")
     .attr("x2", 6);
 
 groupTick
-  .filter(function(d) { return d.value % 5e3 === 0; })
   .append("text")
     .attr("x", 8)
     .attr("dy", ".35em")
     .attr("transform", function(d) { return d.angle > Math.PI && d.angle < Math.PI*2 ? "rotate(180) translate(-16)" : null; })
     .style("text-anchor", function(d) { return d.angle > Math.PI && d.angle < Math.PI*2 ? "end" : null; })
-    .text(function(d) { 
-  return matrixKeys[d.index]; 
-});
+    .text(function(d) { return matrixKeys[d.index]; });
 
 g.append("g")
     .attr("class", "ribbons")
+    .attr("fill-opacity", 1)
   .selectAll("path")
   .data(function(chords) { return chords; })
   .enter().append("path")
     .attr("d", ribbon)
     .style("fill", function(d) { return color(d.source.index); })
-    .style("stroke", function(d) { return d3.rgb(color(d.source.index)).darker(); });
+    .style("stroke", function(d) { return d3.rgb(color(d.source.index)).darker(); })
+    .on("mouseover", showTooltipArc())
+    //.on("mouseover", fadeArc(0.1))
+    .on("mouseout", function(d) {
+      tooltip3.transition()
+              .duration(500)
+              .style("opacity", 0);
+    })
+    //.on("mouseout", fadeArc(1));
 
-// Returns an array of tick angles and values for a given group and step.
-function groupTicks(d, step) {
+
+  function groupTicks(d, step) {
   var k = (d.endAngle - d.startAngle) / d.value;
-  console.log(k);
   return d3.range(0, d.value, step).map(function(value) {
     return {
       index:d.index,
@@ -357,4 +377,66 @@ function groupTicks(d, step) {
       angle: value * k + d.startAngle + d.value*1.5
     };
   });
+}
+
+function fade(opacity) {
+  return function(d, i) {
+    d3.selectAll("g.ribbons path")
+        .filter(function(d) {
+          return d.source.index != i.index && d.target.index!= i.index;
+        })
+      .transition()
+        .duration(60)
+        .style("opacity", opacity);  
+  };
+}
+
+function showTooltip() {
+  var p = d3.format(".2%"), q = d3.format(",.4r")
+  return function(d) {
+    tooltip3.transition().duration(1000)
+    .style("opacity", 1);
+    tooltip3
+      .style("opacity", 1)
+      .html(matrixKeys[d.srcElement.__data__.index] + "→ " + p(d.target.__data__.value) + " of the kills")
+      .style("left", (d.pageX + 15) + "px")
+      .style("top", (d.pageY - 28) + "px")
+    console.log(matrixKeys[d.srcElement.__data__.index] + "→ " + p(d.target.__data__.value) + " of the kills")
+
+  };
+}
+
+function hideTooltip() {
+  return function(d) {
+  tooltip3
+    .transition()
+    .duration(1000)
+    .style("opacity", 0)
+  };
+}
+
+function fadeArc(opacity) {
+  return function(d, i) {
+    d3.selectAll("g.ribbons path")
+        .filter(function(d) {
+          console.log(d)
+          return d.target.__data__.source.index != i.index && d.target.__data__.target.index != i.index;
+        })
+      .transition()
+        .style("opacity", opacity);  
+  };
+}
+
+function showTooltipArc() {
+  var p = d3.format(".2%"), q = d3.format(",.4r")
+  return function(d) {
+    tooltip3.transition().duration(1000)
+      .style("opacity", 1);
+    tooltip3
+      .html("Killer → Killed:<br/>" + 
+        matrixKeys[d.target.__data__.source.index] + "→ " + matrixKeys[d.target.__data__.target.index] + ": " + p(d.target.__data__.source.value) + "<br/>" +
+        matrixKeys[d.target.__data__.target.index] + "→ " + matrixKeys[d.target.__data__.source.index] + ": " + p(d.target.__data__.target.value))
+      .style("left", (d.pageX + 15) + "px")
+      .style("top", (d.pageY - 28) + "px")
+  };
 }

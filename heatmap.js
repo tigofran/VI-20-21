@@ -190,7 +190,7 @@ data = d3.csv(file, function(d) {
 	setColorDomain(totalByEpisode);
 	var myColor = d3.scaleSequentialLog()
 	.interpolator(d3.interpolateReds)
-	.domain([min,max])
+	.domain([min/2,max])
 
 	// // create a tooltip
 	var tooltip = d3.select("body")
