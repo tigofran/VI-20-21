@@ -160,8 +160,8 @@ data = d3.csv(file, function(d) {
 
 	// set the dimensions and margins of the graph
 	var margin = {top: 80, right: 0, bottom: 50, left: 80},
-	  width = 450 - margin.left - margin.right,
-	  height = 450 - margin.top - margin.bottom;
+	  width = 400 - margin.left - margin.right,
+	  height = 400 - margin.top - margin.bottom;
 
 	var svg = d3.select("#heatmap").append("svg")
      .attr("width", width + margin.left + margin.right)
@@ -556,8 +556,8 @@ data = d3.csv(file, function(d) {
   
 	// set the dimensions and margins of the graph
 	var margin = {top: 0, right: 0, bottom: 0, left: 50},
-		width = 450 - margin.left - margin.right,
-		height = 350 - margin.top - margin.bottom;
+		width = 560 - margin.left - margin.right,
+		height = 300 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
 	var svg2 = d3.select("#tree_map")
@@ -1107,7 +1107,7 @@ data = d3.csv(file, function(d) {
 	  matrix= Object.values(matrixData);
 	  matrixKeys = Object.keys(matrixData);
 	  
-	  var width3="750", height3="750";
+	  var width3="700", height3="700";
 	  var svg3 = d3.select("#chord")
 		.append("svg")
 		  .attr("width", width3)
@@ -1147,7 +1147,7 @@ data = d3.csv(file, function(d) {
 		  .range(colors);
 	  
 	  var g = svg3.append("g")
-		  .attr("transform", "translate(" + width3 / 2 + "," + height3 / 2 + ")")
+		  .attr("transform", "translate(" + 300 + "," + 325 + ")")
 		  .datum(chord(matrix));
 	  
 	  var group = g.append("g")
