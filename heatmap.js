@@ -555,9 +555,9 @@ data = d3.csv(file, function(d) {
 	}
   
 	// set the dimensions and margins of the graph
-	var margin = {top: 50, right: 10, bottom: 10, left: 10},
-		width = 600 - margin.left - margin.right,
-		height = 400 - margin.top - margin.bottom;
+	var margin = {top: 80, right: 0, bottom: 50, left: 50},
+		width = 400 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
 	var svg2 = d3.select("#tree_map")
@@ -708,7 +708,7 @@ data = d3.csv(file, function(d) {
 		.attr('y', function (d) { return d.y0; })
 		.attr('width', function (d) { return d.x1 - d.x0; })
 		.attr('height', function (d) { return d.y1 - d.y0; })
-		//.style("stroke", "black")
+		.style("stroke-width", 4)
 		.style("fill", function(d) {
 			return myColor(d.value)} )
 		.on("mouseover",mouseover2)
@@ -753,7 +753,7 @@ data = d3.csv(file, function(d) {
 			.attr('y', function (d) { return d.y0; })
 			.attr('width', function (d) { return d.x1 - d.x0; })
 			.attr('height', function (d) { return d.y1 - d.y0; })
-		squares2//.style("stroke", "black")
+		squares2.style("stroke-width", 4)
 			.style("fill", function(d) {
 			return myColor(d.value)} )
 			.on("mouseover",mouseover2)
@@ -1050,7 +1050,7 @@ data = d3.csv(file, function(d) {
 	  matrix= Object.values(matrixData);
 	  matrixKeys = Object.keys(matrixData);
 	  
-	  var width3="800", height3="800";
+	  var width3="750", height3="750";
 	  var svg3 = d3.select("#chord")
 		.append("svg")
 		  .attr("width", width3)
