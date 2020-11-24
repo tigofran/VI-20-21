@@ -71,13 +71,13 @@ data = d3.csv(file, function(d) {
 
 	var radiodeaths = d3.select("#radiodeaths").on("change", function(d){
 		currentLabel = "Deaths";
-		updateTitle();
+		//updateTitle();
 		updateHeatmap();
 		updateTreemap();
 	})
 	var radiokills = d3.select("#radiokills").on("change", function(d){
 		currentLabel = "Kills";
-		updateTitle();
+		//updateTitle();
 		updateHeatmap();
 		updateTreemap();
 	})
@@ -160,8 +160,8 @@ data = d3.csv(file, function(d) {
 
 	// set the dimensions and margins of the graph
 	var margin = {top: 80, right: 0, bottom: 50, left: 80},
-	  width = 500 - margin.left - margin.right,
-	  height = 500 - margin.top - margin.bottom;
+	  width = 450 - margin.left - margin.right,
+	  height = 450 - margin.top - margin.bottom;
 
 	var svg = d3.select("#heatmap").append("svg")
      .attr("width", width + margin.left + margin.right)
@@ -203,7 +203,7 @@ data = d3.csv(file, function(d) {
 	.domain([min/2,max])
 
 	// // create a tooltip
-	var tooltip = d3.select("body")
+	var tooltip = d3.select("#heatmap")
 	  .append("div")
 	  .style("opacity", 0)
 	  .attr("class", "tooltip")
@@ -331,19 +331,19 @@ data = d3.csv(file, function(d) {
 		.on("click",rectClick)
 
 		// // Add title to graph
-		title = svg.append("text")
-		.attr("x", titlex)
-		.attr("y", titley)
-		.attr("text-anchor", "middle")
-		.style("font-size", "22px")
-		.text(function() {return  currentLabel + " in Game of Thrones"});
+		// title = svg.append("text")
+		// .attr("x", titlex)
+		// .attr("y", titley)
+		// .attr("text-anchor", "middle")
+		// .style("font-size", "22px")
+		// .text(function() {return  currentLabel + " in Game of Thrones"});
 	  }
 	  
 	  createHeatmap();
 
-	  function updateTitle(){
-		  title.text(function() {return  currentLabel + " in Game of Thrones"});
-	  }
+	//   function updateTitle(){
+	// 	  title.text(function() {return  currentLabel + " in Game of Thrones"});
+	//   }
 
 	// // // Add subtitle to graph
 	// svg.append("text")
@@ -366,7 +366,7 @@ data = d3.csv(file, function(d) {
 	  .style("max-width", 400)
 	  .text("Episode");
 
-	ylabelx = -50;
+	ylabelx = -25;
 	ylabely = height / 2;
 
 	// adapted from https://stackoverflow.com/a/30417969
@@ -555,9 +555,9 @@ data = d3.csv(file, function(d) {
 	}
   
 	// set the dimensions and margins of the graph
-	var margin = {top: 80, right: 0, bottom: 50, left: 50},
-		width = 400 - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+	var margin = {top: 0, right: 0, bottom: 0, left: 50},
+		width = 450 - margin.left - margin.right,
+		height = 350 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
 	var svg2 = d3.select("#tree_map")
@@ -568,7 +568,7 @@ data = d3.csv(file, function(d) {
 					.attr("transform",
 						"translate(" + margin.left + "," + margin.top + ")");
 
-	var tooltip2 = d3.select("body")
+	var tooltip2 = d3.select("#tree_map")
 		.append("div")
 		.style("opacity", 0)
 		.attr("class", "tooltip2")
@@ -1058,7 +1058,7 @@ data = d3.csv(file, function(d) {
 		.append("g")
 		  .attr("transform", "translate(0,0)");
 	  
-	  var tooltip3 = d3.select("body")
+	  var tooltip3 = d3.select("#chord")
 		.append("div")
 		.style("opacity", 0)
 		.attr("class", "tooltip")
