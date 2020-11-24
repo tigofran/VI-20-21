@@ -1,46 +1,3 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      #tooltip {
-        color: white;
-        opacity: .9;
-        background: #333;
-        padding: 5px;
-        border: 1px solid lightgrey;
-        border-radius: 5px;
-        position: absolute;
-        z-index: 10;
-        visibility: hidden;
-        white-space: nowrap;
-        pointer-events: none;
-      }
-      #circle circle {
-        fill: none;
-        pointer-events: all;
-      }
-      path.group {
-        fill-opacity: .8;
-      }
-      path.chord {
-        fill-opacity: .8;
-        stroke: #000;
-        stroke-width: .25px;
-      }
-      #circle:hover path.fade {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="tooltip"></div>
-    <script src="lib/d3.js"></script>
-    <script src="lib/queue.js"></script>
-    <script src="lib/underscore.js"></script>
-    <script src="js/mapper.js"></script>
-    <script>
       //*******************************************************************
       //  MATRIX AND MAP
       //*******************************************************************
@@ -67,7 +24,7 @@
             .innerRadius(r0)
             .outerRadius(r0 + 20);
 
-        var svg = d3.select("body").append("svg:svg")
+        var svg = d3.select("#chord").append("svg:svg")
             .attr("width", w)
             .attr("height", h)
           .append("svg:g")
@@ -148,6 +105,3 @@
             });
           }
       }
-    </script>
-  </body>
-</html>
