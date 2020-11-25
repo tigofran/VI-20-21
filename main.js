@@ -26,10 +26,6 @@ data = d3.csv(file, function(d) {
 	dwd : d['DwD']
   };
 }).then(function(data) {
-	d3.json("matrix.json", function(batata){
-		matrix = batata;
-	})
-
 	var filterGroups = ['No Filter','Season','Books','Character','House', 'Killing Method',
 						'Gender','Nobility','Animals']
 	var totalByEpisode = [];
@@ -274,41 +270,93 @@ data = d3.csv(file, function(d) {
 	var clickedSeason;
 	var clickedEpisode;
 	var clickedMethod;
+	var clickedHouse;
 	var previousRectSeason;
 	var previousRectEpisode;
 	var selectedRectSeason;
 	var selectedRectEpisode;
 	var clickedRect; //keep clicked rectangle
-	var isClickReset = true; //check if rectangle is clicked
+	var allegiance;
 
 	function rectClick(d){
-		clickedRect = d.target;
-		isClickReset = !isClickReset; //toggle clicked same button
-		if (clickedRect.__data__.val != undefined){
-			previousRectSeason = selectedRectSeason;
-			previousRectEpisode = selectedRectEpisode;
-			var selectedRect = d3.select(this)
+		if (d.target.__data__.val != undefined){
+			clickedRect = d.target;
+			if (previousRectSeason != selectedRectSeason && previousRectEpisode != selectedRectEpisode){
+				previousRectSeason = selectedRectSeason;
+				previousRectEpisode = selectedRectEpisode;
+			}
+			else{
+				previousRectSeason = undefined;
+				previousRectEpisode = undefined;
+			}
 			selectedRectSeason = clickedRect.__data__.season;
 			selectedRectEpisode = clickedRect.__data__.episode;
-			if (isClickReset == true){
-				clickedSeason = undefined;
-				clickedEpisode = undefined;
+			if (previousRectSeason == selectedRectSeason && previousRectEpisode == selectedRectEpisode){
 				clickedRect = undefined;
 				clickFilter = undefined;
-			}
-			if (clickedRect != undefined){
+				clickedSeason = undefined;
+				clickedEpisode = undefined;
+			}else{
 				clickedSeason = clickedRect.__data__.season;
 				clickedEpisode = clickedRect.__data__.episode;
+				clickedMethod = undefined;
+				clickedHouse = undefined;
 			}
 		updateHeatmap();
 		updateTreemap();
 		}
 	}
 
+	var previousRectMethod, selectedRectMethod;
+	function rectClick2(d){	
+		if (d.target.__data__.data.value != undefined){
+			clickedRect = d.target;
+			if (previousRectMethod != selectedRectMethod)
+				previousRectMethod = selectedRectMethod;
+			else
+				previousRectMethod = undefined;
+			selectedRectMethod = clickedRect.__data__.data.Method;
+			if (previousRectMethod == selectedRectMethod){
+				clickedRect = undefined;
+				clickFilter = undefined;
+				clickedMethod = undefined;
+			}else{
+				clickedEpisode = undefined;
+				clickedSeason = undefined;
+				clickedMethod = clickedRect.__data__.data.Method;
+				clickedHouse = undefined;
+			}
+		updateHeatmap();
+		updateTreemap();
+		}
+	}
+	
+
+	function rectClick3(d){
+		if (d.target.__data__ != undefined){
+			clickedRect = d.target;
+			if (previousRectHouse != selectedRectHouse)
+				previousRectHouse = selectedRectHouse;
+			else
+				previousRectHouse = undefined;
+			selectedRectHouse = allegiance[clickedRect.__data__.index];
+			if (previousRectHouse == selectedRectHouse){
+				clickedRect = undefined;
+				clickFilter = undefined;
+				clickedHouse = undefined;
+			}else{
+				clickedEpisode = undefined;
+				clickedSeason = undefined;
+				clickedMethod = undefined;
+				clickedHouse = allegiance[clickedRect.__data__.index];
+			}
+		updateHeatmap();
+		updateTreemap();
+		}		
+	}
+
 	titlex = width / 2
 	titley = -25
-	subtitley = titley + 25
-
 	// // add the squares
 	function createHeatmap(){
 		heatmap = svg.selectAll()
@@ -347,16 +395,6 @@ data = d3.csv(file, function(d) {
 	// 	  title.text(function() {return  currentLabel + " in Game of Thrones"});
 	//   }
 
-	// // // Add subtitle to graph
-	// svg.append("text")
-	//   .attr("x", titlex)
-	//   .attr("y", subtitley)
-	//   .attr("text-anchor", "middle")
-	//   .style("font-size", "14px")
-	//   .style("fill", "grey")
-	//   .style("max-width", 400)
-	//   .text("Explore your favorite or local airport and find something fun!");
-
 	xlabelx = width / 2;
 	xlabely = height + 40;
 
@@ -386,8 +424,11 @@ data = d3.csv(file, function(d) {
 				return d.season == clickedSeason && d.episode == clickedEpisode;
 			else if (clickedMethod != undefined)
 				return d.method == clickedMethod;
-			else if (clickedHouse != undefined)
-				return d.allegiance == clickedHouse;
+			else if (clickedHouse != undefined){
+				if(currentLabel == 'Deaths')
+					return d.allegiance == clickedHouse;
+				return d.killershouse == clickedHouse;
+			}
 		}
 	}
 
@@ -601,31 +642,6 @@ data = d3.csv(file, function(d) {
 			.style("stroke", 'none');
 	}
 
-	var previousRectMethod, selectedRectMethod;
-	function rectClick2(d){		
-		if (d.target.__data__.data.value != undefined){
-			clickedRect = d.target;
-			if (previousRectMethod != selectedRectMethod)
-				previousRectMethod = selectedRectMethod;
-			else
-				previousRectMethod = undefined;
-			var selectedRect = d3.select(this)
-			selectedRectMethod = selectedRect._groups[0][0].__data__.data.Method;
-			if (previousRectMethod == selectedRectMethod){
-				clickedRect = undefined;
-				clickFilter = undefined;
-				clickedMethod = undefined;
-			}else{
-				clickedEpisode = undefined;
-				clickedSeason = undefined;
-				clickedMethod = clickedRect.__data__.data.Method;
-				clickedHouse = undefined;
-			}
-			updateHeatmap();
-			updateTreemap();
-		}
-	}
-
 	function createFilterTree(fil, fil2){
 		if(selectedGroup == undefined && clickedRect == undefined){
 			return data;
@@ -779,8 +795,7 @@ data = d3.csv(file, function(d) {
 				return "black" });
 	}
 
-
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	var tooltip3;
 	var previousRectHouse, selectedRectHouse, clickedHouse;
 	var matrix=
@@ -890,7 +905,7 @@ data = d3.csv(file, function(d) {
 		};
 	}).then(function (data_chord){
 		var killers = d3.map(data_chord, function(d){return d.killer;})
-		var allegiance = d3.map(data_chord, function(d){return d.house;})
+		allegiance = d3.map(data_chord, function(d){return d.house;})
 		var colors = d3.map(data_chord, function(d){return d.colors;})
 	
 	  var width3="700", height3="700";
@@ -1059,33 +1074,6 @@ data = d3.csv(file, function(d) {
 			.style("top", (d.pageY - 28) + "px")
 		};
 	  }
-	  
-	 
-
-
-	function rectClick3(d){
-		if (d.target.__data__ != undefined){
-			clickedRect = d.target;
-			if (previousRectHouse != selectedRectHouse)
-				previousRectHouse = selectedRectHouse;
-			else
-				previousRectHouse = undefined;
-			var selectedRect = d3.select(this)
-			selectedRectHouse = allegiance[clickedRect.__data__.index];
-			if (previousRectHouse == selectedRectHouse){
-				clickedRect = undefined;
-				clickFilter = undefined;
-				clickedHouse = undefined;
-			}else{
-				clickedEpisode = undefined;
-				clickedSeason = undefined;
-				clickedMethod = undefined;
-				clickedHouse = allegiance[clickedRect.__data__.index];
-			}
-			updateHeatmap();
-			updateTreemap();
-		}		
-	}
 })
 });
 
