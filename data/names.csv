@@ -1,95 +1,95 @@
-name,house,color,,
-Animal,Animal,#E0EBDD,,
-Beric Dondarrion,Brotherhood Without Banners,#796663,,
-Brotherhood Without Banners,Brotherhood Without Banners,#796663,,
-Children of the Forest,Children of the Forest,#0ED002,,
-Jaqen H'ghar,Faceless Men,#8A9989,,
-Faith Militant,Faith Militant,#383738,,
-Faith of the Seven,Faith of the Seven,#380303,,
-Styr,Free Folk,#6A906E,,
-Tormund,Free Folk,#6A906E,,
-Ygritte,Free Folk,#6A906E,,
-Wildling,Free Folk,#6A906E,,
-Knights of the Vale,House Arryn,#67D2FF,,
-Arryns,House Arryn,#67D2FF,,
-Petyr Baelish,House Baelish,#00C04D,,
-Other Baelishes,House Baelish,#00C04D,,
-Maester Cressen,House Baratheon of Dragonstone,#A34200,,
-Stannis Baratheon,House Baratheon of Dragonstone,#A34200,,
-Other Baratheons of Dragonstone,House Baratheon of Dragonstone,#A34200,,
-Robert Baratheon,House Baratheon of King's Landing,#FFB900,,
-Tommen Baratheon,House Baratheon of King's Landing,#FFB900,,
-Other Baratheons of King's Landing,House Baratheon of King's Landing,#FFB900,,
-Baratheons of Storm's End,House Baratheon of Storm's End,#FFF200,,
-Locke,House Bolton,#FDB7EE,,
-Ramsay Bolton,House Bolton,#FDB7EE,,
-Roose Bolton,House Bolton,#FDB7EE,,
-Other Boltons,House Bolton,#FDB7EE,,
-The Tickler,House Clegane,#FFDA37,,
-Gregor the Mountain Clegane,House Clegane,#FFDA37,,
-Sandor the Hound Clegane,House Clegane,#FFDA37,,
-Lothar Frey,House Frey,#374883,,
-Other Freys,House Frey,#374883,,
-Euron Greyjoy,House Greyjoy,#FEF79C,,
-Theon Greyjoy,House Greyjoy,#FEF79C,,
-Yara Greyjoy,House Greyjoy,#FEF79C,,
-Other Greyjoys,House Greyjoy,#FEF79C,,
-Cersei Lannister,House Lannister,#790909,,
-Dickon Tarly,House Lannister,#790909,,
-Jaime Lannister,House Lannister,#790909,,
-Joffrey Baratheon,House Lannister,#790909,,
-Little Bird,House Lannister,#790909,,
-Meryn Trant,House Lannister,#790909,,
-Podrick Payne,House Lannister,#790909,,
-Qyburn,House Lannister,#790909,,
-Tyrion Lannister,House Lannister,#790909,,
-Other Lannisters,House Lannister,#790909,,
-Martells,House Martell,#DCA21B,,
-Lyanna Mormont,House Mormont,#05743F,,
-Other Mormonts,House Mormont,#05743F,,
-Ilyn Payne,House Payne,#7F45F6,,
-Arya Stark,House Stark,#969696,,
-Catelyn Stark,House Stark,#969696,,
-Gendry,House Stark,#969696,,
-Hodor,House Stark,#969696,,
-Jon Snow,House Stark,#969696,,
-Maester Luwin,House Stark,#969696,,
-Ned Stark,House Stark,#969696,,
-Osha,House Stark,#969696,,
-Robb Stark,House Stark,#969696,,
-Rodrik Cassel,House Stark,#969696,,
-Other Starks,House Stark,#969696,,
-Barristan Selmy,House Targaryen,#FF0000,,
-Daario Naharis,House Targaryen,#FF0000,,
-Daenerys Targaryen,House Targaryen,#FF0000,,
-Dothrakis,House Targaryen,#75553A,,
-Grey Worm,House Targaryen,#FF0000,,
-Jorah Mormont,House Targaryen,#FF0000,,
-Rhaegal,House Targaryen,#FF0000,,
-Unsullied,House Targaryen,#FF0000,,
-Viserion,House Targaryen,#FF0000,,
-Other Targaryens,House Targaryen,#FF0000,,
-Brienne of Tarth,House Tarth,#5144A6,,
-Hoster Tully,House Tully,#040060,,
-Loras Tyrell,House Tyrell,#2AA704,,
-Olenna Tyrell,House Tyrell,#2AA704,,
-Other Tyrells,House Tyrell,#2AA704,,
-Umbers,House Umber,#787876,,
-Masters,The Masters,#FFE500,,
-Melisandre of Asshai,Lord of Light,#FFFC00,,
-Alliser Thorne,Night's Watch,#000000,,
-Eddison Tollett,Night's Watch,#000000,,
-Grenn,Night's Watch,#000000,,
-Olly,Night's Watch,#000000,,
-Sam Tarly,Night's Watch,#000000,,
-Yoren,Night's Watch,#000000,,
-Night's Watch,Night's Watch,#000000,,
-Grand Maester Pycelle,Order of Maesters,#FFE500,,
-Sand Snakes,Sand Snakes,#FFDD8F,,
-Smallfolk,Smallfolk,#5F4437,,
-Sons of the Harpy,Sons of the Harpy,#147FB1,,
-The Thirteen,The Thirteen,#BE7451,,
-Pyat Pree,Warlocks of Qarth,#CCB1FF,,
-Night King,White Walkers,#72AABD,,
-White Walkers,White Walkers,#72AABD,,
-Others,None,#9B878E,,
+name,house,color
+Animal,Animal,#E0EBDD
+Beric Dondarrion,Brotherhood Without Banners,#796663
+Brotherhood W/o Banners,Brotherhood Without Banners,#796663
+Children of the Forest,Children of the Forest,#0ED002
+Jaqen H'ghar,Faceless Men,#8A9989
+Faith Militant,Faith Militant,#383738
+Faith of the Seven,Faith of the Seven,#380303
+Styr,Free Folk,#6A906E
+Tormund,Free Folk,#6A906E
+Ygritte,Free Folk,#6A906E
+Wildling,Free Folk,#6A906E
+Knights of the Vale,House Arryn,#67D2FF
+Arryns,House Arryn,#67D2FF
+Petyr Baelish,House Baelish,#00C04D
+Other Baelishes,House Baelish,#00C04D
+Maester Cressen,House Baratheon of Dragonstone,#A34200
+Stannis Baratheon,House Baratheon of Dragonstone,#A34200
+Other Baratheons of Dragonstone,House Baratheon of Dragonstone,#A34200
+Robert Baratheon,House Baratheon of King's Landing,#FFB900
+Tommen Baratheon,House Baratheon of King's Landing,#FFB900
+Other Baratheons of King's Landing,House Baratheon of King's Landing,#FFB900
+Baratheons of Storm's End,House Baratheon of Storm's End,#FFF200
+Locke,House Bolton,#FDB7EE
+Ramsay Bolton,House Bolton,#FDB7EE
+Roose Bolton,House Bolton,#FDB7EE
+Other Boltons,House Bolton,#FDB7EE
+The Tickler,House Clegane,#FFDA37
+The Mountain,House Clegane,#FFDA37
+The Hound,House Clegane,#FFDA37
+Lothar Frey,House Frey,#374883
+Other Freys,House Frey,#374883
+Euron Greyjoy,House Greyjoy,#FEF79C
+Theon Greyjoy,House Greyjoy,#FEF79C
+Yara Greyjoy,House Greyjoy,#FEF79C
+Other Greyjoys,House Greyjoy,#FEF79C
+Cersei Lannister,House Lannister,#790909
+Dickon Tarly,House Lannister,#790909
+Jaime Lannister,House Lannister,#790909
+Joffrey Baratheon,House Lannister,#790909
+Little Bird,House Lannister,#790909
+Meryn Trant,House Lannister,#790909
+Podrick Payne,House Lannister,#790909
+Qyburn,House Lannister,#790909
+Tyrion Lannister,House Lannister,#790909
+Other Lannisters,House Lannister,#790909
+Martells,House Martell,#DCA21B
+Lyanna Mormont,House Mormont,#05743F
+Other Mormonts,House Mormont,#05743F
+Ilyn Payne,House Payne,#7F45F6
+Arya Stark,House Stark,#969696
+Catelyn Stark,House Stark,#969696
+Gendry,House Stark,#969696
+Hodor,House Stark,#969696
+Jon Snow,House Stark,#969696
+Maester Luwin,House Stark,#969696
+Ned Stark,House Stark,#969696
+Osha,House Stark,#969696
+Robb Stark,House Stark,#969696
+Rodrik Cassel,House Stark,#969696
+Other Starks,House Stark,#969696
+Barristan Selmy,House Targaryen,#FF0000
+Daario Naharis,House Targaryen,#FF0000
+Daenerys Targaryen,House Targaryen,#FF0000
+Dothrakis,House Targaryen,#75553A
+Grey Worm,House Targaryen,#FF0000
+Jorah Mormont,House Targaryen,#FF0000
+Rhaegal,House Targaryen,#FF0000
+Unsullied,House Targaryen,#FF0000
+Viserion,House Targaryen,#FF0000
+Other Targaryens,House Targaryen,#FF0000
+Brienne of Tarth,House Tarth,#5144A6
+Hoster Tully,House Tully,#040060
+Loras Tyrell,House Tyrell,#2AA704
+Olenna Tyrell,House Tyrell,#2AA704
+Other Tyrells,House Tyrell,#2AA704
+Umbers,House Umber,#787876
+Masters,The Masters,#FFE500
+Melisandre of Asshai,Lord of Light,#FFFC00
+Alliser Thorne,Night's Watch,#000000
+Eddison Tollett,Night's Watch,#000000
+Grenn,Night's Watch,#000000
+Olly,Night's Watch,#000000
+Sam Tarly,Night's Watch,#000000
+Yoren,Night's Watch,#000000
+Night's Watch,Night's Watch,#000000
+Grand Maester Pycelle,Order of Maesters,#FFE500
+Sand Snakes,Sand Snakes,#FFDD8F
+Smallfolk,Smallfolk,#5F4437
+Sons of the Harpy,Sons of the Harpy,#147FB1
+The Thirteen,The Thirteen,#BE7451
+Pyat Pree,Warlocks of Qarth,#CCB1FF
+Night King,White Walkers,#72AABD
+White Walkers,White Walkers,#72AABD
+Others,None,#9B878E
