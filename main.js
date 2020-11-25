@@ -1,4 +1,4 @@
-var previousRectHouse, selectedRectHouse, clickedHouse;
+var previousRectHouse, selectedRectHouse, clickedHouse, selectedCharacter, killers_chord;
 
 var file = "GOT_deaths.csv"
 data = d3.csv(file, function(d) {
@@ -270,7 +270,6 @@ data = d3.csv(file, function(d) {
 	var clickedSeason;
 	var clickedEpisode;
 	var clickedMethod;
-	var clickedHouse;
 	var previousRectSeason;
 	var previousRectEpisode;
 	var selectedRectSeason;
@@ -337,23 +336,33 @@ data = d3.csv(file, function(d) {
 			clickedRect = d.target;
 			if (previousRectHouse != selectedRectHouse)
 				previousRectHouse = selectedRectHouse;
-			else
+			else				
 				previousRectHouse = undefined;
 			selectedRectHouse = allegiance[clickedRect.__data__.index];
 			if (previousRectHouse == selectedRectHouse){
-				clickedRect = undefined;
-				clickFilter = undefined;
-				clickedHouse = undefined;
+				if (killers_chord[clickedRect.__data__.index] != selectedCharacter){
+					previousRectHouse = selectedRectHouse;
+					selectedCharacter = killers_chord[clickedRect.__data__.index];}
+				else{
+					clickedRect = undefined;
+					clickFilter = undefined;
+					clickedHouse = undefined;
+					selectedCharacter = undefined;
+				}
 			}else{
 				clickedEpisode = undefined;
 				clickedSeason = undefined;
 				clickedMethod = undefined;
 				clickedHouse = allegiance[clickedRect.__data__.index];
+				selectedCharacter = killers_chord[clickedRect.__data__.index];
 			}
 		updateHeatmap();
 		updateTreemap();
+		console.log(selectedRectHouse);
+		console.log(selectedCharacter);
 		}		
 	}
+
 
 	titlex = width / 2
 	titley = -25
@@ -796,8 +805,8 @@ data = d3.csv(file, function(d) {
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	var tooltip3;
-	var previousRectHouse, selectedRectHouse, clickedHouse;
 	var matrix=
 		[[0.001348921, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.001348921, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.000899281, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0.0040467625899, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964] ,
 		[0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ,
@@ -902,7 +911,7 @@ data = d3.csv(file, function(d) {
 			colors : d['color']
 		};
 	}).then(function (data_chord){
-		var killers = d3.map(data_chord, function(d){return d.killer;})
+		killers_chord = d3.map(data_chord, function(d){return d.killer;})
 		allegiance = d3.map(data_chord, function(d){return d.house;})
 		var colors = d3.map(data_chord, function(d){return d.colors;})
 	
@@ -983,7 +992,7 @@ data = d3.csv(file, function(d) {
 		  .attr("dy", ".35em")
 		  .attr("transform", function(d) { return d.angle > Math.PI && d.angle < Math.PI*2 ? "rotate(180) translate(-16)" : null; })
 		  .style("text-anchor", function(d) { return d.angle > Math.PI && d.angle < Math.PI*2 ? "end" : null; })
-		  .text(function(d) { return killers[d.index]; });
+		  .text(function(d) { return killers_chord[d.index]; });
 	  
 	  g.append("g")
 		  .attr("class", "ribbons")
@@ -1006,7 +1015,7 @@ data = d3.csv(file, function(d) {
 		var k = (d.endAngle - d.startAngle) / d.value;
 		return d3.range(0, d.value, step).map(function(value) {
 		  return {
-			index:d.index,
+			index: d.index,
 			value: value, 
 			angle: value * k + d.startAngle + d.value*1.5
 		  };
@@ -1014,15 +1023,19 @@ data = d3.csv(file, function(d) {
 	  }
 	  
 	  function fade(opacity) {
-		return function(d, i) {
-		  d3.selectAll("g.ribbons path")
-			  .filter(function(d) {
-				return d.source.index != i.index && d.target.index!= i.index;
-			  })
-			.transition()
-			  .duration(60)
-			  .style("opacity", opacity);  
-		};
+		  //console.log("FADE")
+		  //console.log(clickedHouse)
+		  //if(clickedHouse == undefined) {
+			return function(d, i) {
+			d3.selectAll("g.ribbons path")
+				.filter(function(d) {
+					return d.source.index != i.index && d.target.index!= i.index;
+				})
+				.transition()
+				.duration(60)
+				.style("opacity", opacity);  
+			};
+		//}	
 	  }
 	  
 	  function showTooltip() {
@@ -1032,11 +1045,9 @@ data = d3.csv(file, function(d) {
 		  .style("opacity", 1);
 		  tooltip3
 			.style("opacity", 1)
-			.html(killers[d.srcElement.__data__.index] + "→ " + p(d.target.__data__.value) + " of the kills")
+			.html(killers_chord[d.srcElement.__data__.index] + "→ " + p(d.target.__data__.value) + " of the kills")
 			.style("left", (d.pageX + 15) + "px")
-			.style("top", (d.pageY - 28) + "px")
-		  //console.log(matrixKeys[d.srcElement.__data__.index] + "→ " + p(d.target.__data__.value) + " of the kills")
-	  
+			.style("top", (d.pageY - 28) + "px")	  
 		};
 	  }
 	  
@@ -1058,7 +1069,7 @@ data = d3.csv(file, function(d) {
 			  .style("opacity", opacity);  
 		};
 	  }
-	  
+
 	  function showTooltipArc() {
 		var p = d3.format(".2%"), q = d3.format(",.4r")
 		return function(d) {
@@ -1066,8 +1077,8 @@ data = d3.csv(file, function(d) {
 			.style("opacity", 1);
 		  tooltip3
 			.html("Killer → Killed:<br/>" + 
-			  killers[d.target.__data__.source.index] + "→ " + killers[d.target.__data__.target.index] + ": " + p(d.target.__data__.source.value) + "<br/>" +
-			  killers[d.target.__data__.target.index] + "→ " + killers[d.target.__data__.source.index] + ": " + p(d.target.__data__.target.value))
+			  killers_chord[d.target.__data__.source.index] + "→ " + killers_chord[d.target.__data__.target.index] + ": " + p(d.target.__data__.source.value) + "<br/>" +
+			  killers_chord[d.target.__data__.target.index] + "→ " + killers_chord[d.target.__data__.source.index] + ": " + p(d.target.__data__.target.value))
 			.style("left", (d.pageX + 15) + "px")
 			.style("top", (d.pageY - 28) + "px")
 		};
