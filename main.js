@@ -198,16 +198,16 @@ data = d3.csv(file, function(d) {
 	.interpolator(d3.interpolateReds)
 	.domain([min/2,max])
 
-	// // create a tooltip
-	var tooltip = d3.select("#heatmap")
-	  .append("div")
-	  .style("opacity", 0)
-	  .attr("class", "tooltip")
-	  .style("background-color", "white")
-	  .style("border", "solid")
-	  .style("border-width", "2px")
-	  .style("border-radius", "5px")
-	  .style("padding", "5px")
+	// // // create a tooltip
+	// var tooltip = d3.select("#heatmap")
+	//   .append("div")
+	//   .style("opacity", 0)
+	//   .attr("class", "tooltip")
+	//   .style("background-color", "white")
+	//   .style("border", "solid")
+	//   .style("border-width", "2px")
+	//   .style("border-radius", "5px")
+	//   .style("padding", "5px")
 
 	// // Three functions that change the tooltip when user hover / move / leave a cell
 
@@ -228,16 +228,19 @@ data = d3.csv(file, function(d) {
 		if (d.target.className.baseVal == "ebd"){
 			tooltip3.html("Approximate Book Death Season: " + d.target.__data__.ebds + "<br>" + 
 			"Approximate Book Death Episode: " + d.target.__data__.ebde)
-			.style('left', d.screenX + 'px')
-			.style('top', d.screenY + 'px')
+			.style("position","absolute")
+			.style('left', d.x - 900+ 'px')
+			.style('top', d.y - 20 + 'px')
 		}
 		else if (d.target.__data__.val != undefined){
 			if(currentLabel == 'Deaths')
 				tooltip3.html("Deaths: " + d.target.__data__.val)
 			else
 				tooltip3.html("Kills: " + d.target.__data__.val)
-			tooltip3.style('left', d.screenX + 'px')
-			.style('top', d.screenY + 'px')
+			tooltip3			
+			.style("position","absolute")
+			.style('left', d.x - 900+ 'px')
+			.style('top', d.y - 20 + 'px')
 		}
 		else{
 			tooltip3
@@ -610,15 +613,15 @@ data = d3.csv(file, function(d) {
 					.attr("transform",
 						"translate(" + margin.left + "," + margin.top + ")");
 
-	var tooltip2 = d3.select("#tree_map")
-		.append("div")
-		.style("opacity", 0)
-		.attr("class", "tooltip2")
-		.style("background-color", "white")
-		.style("border", "solid")
-		.style("border-width", "2px")
-		.style("border-radius", "5px")
-		.style("padding", "5px")
+	// var tooltip2 = d3.select("#tree_map")
+	// 	.append("div")
+	// 	.style("opacity", 0)
+	// 	.attr("class", "tooltip2")
+	// 	.style("background-color", "white")
+	// 	.style("border", "solid")
+	// 	.style("border-width", "2px")
+	// 	.style("border-radius", "5px")
+	// 	.style("padding", "5px")
 
 	function mouseover2(d){
 		if (d.target.__data__.data.value){
@@ -630,9 +633,15 @@ data = d3.csv(file, function(d) {
 	}
 
 	function mousemove2(d){
-		tooltip3.html("Number of kills: " +d.target.__data__.value)
-			.style('left', d.screenX + 'px')
-			.style('top', d.screenY + 'px')
+		console.log(d)
+		if(currentLabel == 'Deaths')
+			tooltip3.html("Deaths: " + d.target.__data__.data.value)
+		else
+			tooltip3.html("Kills: " + d.target.__data__.data.value)
+		tooltip3
+			.style("position","absolute")
+			.style('left', d.x - 900+ 'px')
+			.style('top', d.y - 20 + 'px')
 	}
 
 	function mouseleave2(d){
@@ -962,8 +971,8 @@ data = d3.csv(file, function(d) {
 		  .style("fill", function(d) { return color(d.index); })
 		  .style("stroke", function(d) { return d3.rgb(color(d.index)).darker(); })
 		  .attr("d", arc)
-		  .on("mouseover", fade(.1))
-		  .on("mouseover", showTooltip())
+		  .on("mousemove", fade(.1))
+		  .on("mousemove", showTooltip())
 		  .on("mouseout", fade(1))
 		  .on("mouseout", hideTooltip());
 	  
@@ -996,7 +1005,7 @@ data = d3.csv(file, function(d) {
 		  .attr("d", ribbon)
 		  .style("fill", function(d) { return color(d.source.index); })
 		  .style("stroke", function(d) { return d3.rgb(color(d.source.index)).darker(); })
-		  .on("mouseover", showTooltipArc())
+		  .on("mousemove", showTooltipArc())
 		  //.on("mouseover", fadeArc(0.1))
 		  .on("mouseout", function(d) {
 			tooltip3.style("opacity", 0);
@@ -1030,14 +1039,12 @@ data = d3.csv(file, function(d) {
 	  function showTooltip() {
 		var p = d3.format(".2%"), q = d3.format(",.4r")
 		return function(d) {
-		  tooltip3
-		  .style("opacity", 1);
-		  tooltip3
+			tooltip3
 			.style("opacity", 1)
 			.html(killers[d.srcElement.__data__.index] + "→ " + p(d.target.__data__.value) + " of the kills")
-			.style("left", (d.pageX + 15) + "px")
-			.style("top", (d.pageY - 28) + "px")
-		  //console.log(matrixKeys[d.srcElement.__data__.index] + "→ " + p(d.target.__data__.value) + " of the kills")
+			.style("position", "absolute")
+			.style('left', d.x - 900+ 'px')
+			.style('top', d.y - 20 + 'px')
 	  
 		};
 	  }
@@ -1064,14 +1071,14 @@ data = d3.csv(file, function(d) {
 	  function showTooltipArc() {
 		var p = d3.format(".2%"), q = d3.format(",.4r")
 		return function(d) {
-		  tooltip3
-			.style("opacity", 1);
-		  tooltip3
+			tooltip3
+			.style("opacity", 1)
 			.html("Killer → Killed:<br/>" + 
 			  killers[d.target.__data__.source.index] + "→ " + killers[d.target.__data__.target.index] + ": " + p(d.target.__data__.source.value) + "<br/>" +
 			  killers[d.target.__data__.target.index] + "→ " + killers[d.target.__data__.source.index] + ": " + p(d.target.__data__.target.value))
-			.style("left", (d.pageX + 15) + "px")
-			.style("top", (d.pageY - 28) + "px")
+			  .style("position", "absolute")
+			  .style('left', d.x - 900+ 'px')
+			  .style('top', d.y - 20 + 'px')
 		};
 	  }
 })
