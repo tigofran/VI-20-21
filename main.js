@@ -945,7 +945,7 @@ data = d3.csv(file, function(d) {
 		  .range(colors);
 	  
 	  var g = svg3.append("g")
-		  .attr("transform", "translate(" + 300 + "," + 325 + ")")
+		  .attr("transform", "translate(" + 300 + "," + 350 + ")")
 		  .datum(chord(matrix));
 	  
 	  var group = g.append("g")

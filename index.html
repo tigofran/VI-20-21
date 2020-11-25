@@ -15,6 +15,7 @@
   position: relative;
 }
 
+
 .dropdown-submenu .dropdown-menu {
   top: 0;
   left: 100%;
@@ -99,6 +100,15 @@ path.chord {
   display: none;
 }
 
+@font-face {
+  font-family: 'myFirstFont';
+  src: url("images/Game_of_Thrones.ttf");
+}
+
+.title {
+  font-family: 'myFirstFont';
+}
+
   </style>
 </head>
 
@@ -107,16 +117,17 @@ path.chord {
 <!-- Initialize a select button -->
   
   <!-- Create a div where the graph will take place -->
+  <div class="title" style="font-weight: bold; font-size: 20px; position: fixed; top: 15px; left: 620px">Deaths of Game of Thrones</div>
   <div id="heatmap" style="position: fixed; top: -30px; bottom:0px; left: -20px; right: 0px"></div>
   <div id="tree_map" style="position: fixed; top: 50px; bottom:0px; left: 400px; right: 0px;"></div>
   <img src="images/barchart_ver_1.png" style="position: fixed; top: 420px; bottom:0px; left: 50px; right: 0px; max-width: 300px; max-height: 400px;">
   <img src="images/mapa_got.jpg" style="max-width: 500px; position: fixed; top: 350px; bottom:0px; left: 404px; right: 0px;">
   <div id="chord" style="position: fixed; top: 50px; bottom:0px; left: 920px; right: 0px"></div>
-  <select id="selectButton" style="max-height: 30px; position: fixed; top: 0px; bottom:0px; left: 500px; right: 0px;"></select>
+  <select id="selectButton" style="max-height: 30px; position: fixed; top: 5px; bottom:0px; left: 200px; right: 0px;"></select>
   
-  <select id="secondSelectButton" style="max-height: 30px; position: fixed; top: 0px; bottom:0px; left: 650px; right: 0px;"></select>
+  <select id="secondSelectButton" style="max-height: 30px; position: fixed; top: 5px; bottom:0px; left: 330px; right: 0px;"></select>
 
-  <form class="switch" style="max-height: 30px; position: fixed; top: 0px; bottom:0px; left: 700px; right: 0px;">
+  <form class="switch" style="max-height: 30px; max-width: 100px; position: fixed; top: 5px; bottom:0px; left: 50px; right: 0px;">
     <div class="switch-field">
       <input type="radio" id="radiodeaths" name="switch-one" value="yes" checked/>
       <label for="radiodeaths" id="radiodeathslabel">Deaths</label>
