@@ -217,7 +217,7 @@ data = d3.csv(file, function(d) {
 
 	function mouseover(d){
 	var strokecolor = d.target.style.stroke;
-	  tooltip
+	  tooltip3
 	    .style("opacity", 1)
 	  d3.select(this)
 	  .style("stroke", function(d){
@@ -230,21 +230,21 @@ data = d3.csv(file, function(d) {
 	}
 	function mousemove(d){
 		if (d.target.className.baseVal == "ebd"){
-			tooltip.html("Approximate Book Death Season: " + d.target.__data__.ebds + "<br>" + 
+			tooltip3.html("Approximate Book Death Season: " + d.target.__data__.ebds + "<br>" + 
 			"Approximate Book Death Episode: " + d.target.__data__.ebde)
 			.style('left', d.screenX + 'px')
 			.style('top', d.screenY + 'px')
 		}
 		else if (d.target.__data__.val != undefined){
 			if(currentLabel == 'Deaths')
-				tooltip.html("Deaths: " + d.target.__data__.val)
+				tooltip3.html("Deaths: " + d.target.__data__.val)
 			else
-				tooltip.html("Kills: " + d.target.__data__.val)
-			tooltip.style('left', d.screenX + 'px')
+				tooltip3.html("Kills: " + d.target.__data__.val)
+			tooltip3.style('left', d.screenX + 'px')
 			.style('top', d.screenY + 'px')
 		}
 		else{
-			tooltip
+			tooltip3
 			.style("opacity", 0)
 		d3.select(this)
 			.style("stroke", "none")
@@ -254,14 +254,14 @@ data = d3.csv(file, function(d) {
 	function mouseleave(d){
 		var strokecolor = d.fromElement.style.stroke;
 		if (d.target.className.baseVal == "ebd"){
-			tooltip
+			tooltip3
 			.style("opacity", 0)
 		d3.select(this)
 			.style("stroke", "red")
 			.style("opacity", 1)
 		}
 		else{
-		tooltip
+		tooltip3
 			.style("opacity", 0)
 		d3.select(this)
 			.style("stroke", function(d){
@@ -288,9 +288,11 @@ data = d3.csv(file, function(d) {
 			previousRectSeason = selectedRectSeason;
 			previousRectEpisode = selectedRectEpisode;
 			var selectedRect = d3.select(this)
-			selectedRectSeason = selectedRect._groups[0][0].__data__.season;
-			selectedRectEpisode = selectedRect._groups[0][0].__data__.episode;
+			selectedRectSeason = clickedRect.__data__.season;
+			selectedRectEpisode = clickedRect.__data__.episode;
 			if (isClickReset == true){
+				clickedSeason = undefined;
+				clickedEpisode = undefined;
 				clickedRect = undefined;
 				clickFilter = undefined;
 			}
@@ -444,8 +446,8 @@ data = d3.csv(file, function(d) {
 		if (selectedGroup != undefined){
 			menuFilter = function(d){return filterData(d);}
 		}
-		console.log(clickFilter);
-		console.log(menuFilter);
+		// console.log(clickFilter);
+		// console.log(menuFilter);
 		var dataFilter = createGroups(clickFilter,menuFilter);
 		setColorDomain(dataFilter);
 		squares = svg.selectAll("rect")
@@ -555,8 +557,8 @@ data = d3.csv(file, function(d) {
 	}
   
 	// set the dimensions and margins of the graph
-	var margin = {top: 0, right: 0, bottom: 0, left: 50},
-		width = 560 - margin.left - margin.right,
+	var margin = {top: 0, right: 0, bottom: 0, left: 0},
+		width = 510 - margin.left - margin.right,
 		height = 300 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
@@ -580,7 +582,7 @@ data = d3.csv(file, function(d) {
 
 	function mouseover2(d){
 		if (d.target.__data__.data.value){
-			tooltip2
+			tooltip3
 				.style("opacity", 1)
 			d3.select(this)
 				.style("stroke", 'black');
@@ -588,25 +590,26 @@ data = d3.csv(file, function(d) {
 	}
 
 	function mousemove2(d){
-		tooltip2.html("Number of kills: " +d.target.__data__.value)
+		tooltip3.html("Number of kills: " +d.target.__data__.value)
 			.style('left', d.screenX + 'px')
 			.style('top', d.screenY + 'px')
 	}
 
 	function mouseleave2(d){
-		tooltip2
+		tooltip3
 			.style("opacity", 0)
 		d3.select(this)
 			.style("stroke", 'none');
 	}
 
 	var previousRectMethod, selectedRectMethod;
-
 	function rectClick2(d){		
 		if (d.target.__data__.data.value != undefined){
 			clickedRect = d.target;
-			previousRectMethod = selectedRectMethod;
-
+			if (previousRectMethod != selectedRectMethod)
+				previousRectMethod = selectedRectMethod;
+			else
+				previousRectMethod = undefined;
 			var selectedRect = d3.select(this)
 			selectedRectMethod = selectedRect._groups[0][0].__data__.data.Method;
 			if (previousRectMethod == selectedRectMethod){
@@ -617,8 +620,8 @@ data = d3.csv(file, function(d) {
 				clickedEpisode = undefined;
 				clickedSeason = undefined;
 				clickedMethod = clickedRect.__data__.data.Method;
+				clickedHouse = undefined;
 			}
-			//console.log(clickedMethod)
 			updateHeatmap();
 			updateTreemap();
 		}
@@ -1280,14 +1283,13 @@ data = d3.csv(file, function(d) {
 	 
 
 	var previousRectHouse, selectedRectHouse, clickedHouse;
-
 	function rectClick3(d){
 		if (d.target.__data__ != undefined){
-			console.log(d.target.__data__.index);
-
 			clickedRect = d.target;
-			previousRectHouse = selectedRectHouse;
-
+			if (previousRectHouse != selectedRectHouse)
+				previousRectHouse = selectedRectHouse;
+			else
+				previousRectHouse = undefined;
 			var selectedRect = d3.select(this)
 			selectedRectHouse = allegiance[clickedRect.__data__.index];
 			if (previousRectHouse == selectedRectHouse){
@@ -1300,7 +1302,6 @@ data = d3.csv(file, function(d) {
 				clickedMethod = undefined;
 				clickedHouse = allegiance[clickedRect.__data__.index];
 			}
-			console.log(allegiance[d.target.__data__.index]);
 			updateHeatmap();
 			updateTreemap();
 		}		
