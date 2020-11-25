@@ -1,7 +1,8 @@
 ﻿killer,name,count,value,house,color
 Alliser Thorne,Wildling,3,0.001348921,Night's Watch,#000000
 Animal,Animal,3,0.001348921,Animal,#E0EBDD
-Animal,Night's Watch,1,0.00044964,Animal,#E0EBDD
+Animal,Masters,1,0.00044964,Animal,#E0EBDD
+Animal,Night's Watch,9,0.0040467625899,Animal,#E0EBDD
 Animal,Other Lannisters,2,0.000899281,Animal,#E0EBDD
 Animal,Others,1,0.00044964,Animal,#E0EBDD
 Animal,Ramsay Bolton,1,0.00044964,Animal,#E0EBDD
@@ -58,7 +59,7 @@ Dothrakis,Other Lannisters,31,0.013938849,House Targaryen,#FF0000
 Dothrakis,Other Targaryens,1,0.00044964,House Targaryen,#FF0000
 Eddison Tollett,Night's Watch,2,0.000899281,Night's Watch,#000000
 Euron Greyjoy,Other Greyjoys,6,0.002697842,House Greyjoy,#FEF79C
-Euron Greyjoy,Rhaegal,1,0.00044964,House Greyjoy,#FEF79C
+Euron Greyjoy,Animal,1,0.00044964,House Greyjoy,#FEF79C
 Euron Greyjoy,Sand Snakes,2,0.000899281,House Greyjoy,#FEF79C
 Gendry,Other Lannisters,2,0.000899281,House Stark,#969696
 Gregor the Mountain Clegane,Animal,1,0.00044964,House Clegane,#FFDA37
@@ -118,7 +119,7 @@ Ned Stark,Other Lannisters,1,0.00044964,House Stark,#969696
 Ned Stark,Other Starks,1,0.00044964,House Stark,#969696
 Ned Stark,Other Targaryens,2,0.000899281,House Stark,#969696
 Night King,Umbers,1,0.00044964,White Walkers,#72AABD
-Night King,Viserion,1,0.00044964,White Walkers,#72AABD
+Night King,Animal,1,0.00044964,White Walkers,#72AABD
 Night's Watch,Night's Watch,7,0.003147482,Night's Watch,#000000
 Night's Watch,Others,1,0.00044964,Night's Watch,#000000
 Night's Watch,Smallfolk,1,0.00044964,Night's Watch,#000000
@@ -240,8 +241,6 @@ Umbers,Other Starks,7,0.003147482,House Umber,#787876
 Unsullied,Masters,6,0.002697842,House Targaryen,#FF0000
 Unsullied,Other Lannisters,6,0.002697842,House Targaryen,#FF0000
 Unsullied,Sons of the Harpy,8,0.003597122,House Targaryen,#FF0000
-Viserion,Masters,1,0.00044964,House Targaryen,#FF0000
-Viserion,Night's Watch,8,0.003597122,House Targaryen,#FF0000
 White Walkers,Animal,1,0.00044964,White Walkers,#72AABD
 White Walkers,Beric Dondarrion,1,0.00044964,White Walkers,#72AABD
 White Walkers,Brotherhood Without Banners,1,0.00044964,White Walkers,#72AABD
