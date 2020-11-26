@@ -1,5 +1,5 @@
 var previousRectHouse, selectedRectHouse, clickedHouse, selectedCharacter, killers_chord;
-
+var file_chord = "data/names.csv"
 var file = "GOT_deaths.csv"
 data = d3.csv(file, function(d) {
   return {
@@ -26,6 +26,19 @@ data = d3.csv(file, function(d) {
 	dwd : d['DwD']
   };
 }).then(function(data) {
+
+	data_chord = d3.csv(file_chord, function(d) {
+		return {
+			// extract important data features
+			killer : d['name'],
+			house : d['house'],
+			colors : d['color']
+		};
+	}).then(function (data_chord){
+		killers_chord = d3.map(data_chord, function(d){return d.killer;})
+		allegiance = d3.map(data_chord, function(d){return d.house;})
+		colors = d3.map(data_chord, function(d){return d.colors;})
+
 	var filterGroups = ['No Filter','Season','Books','Character','House', 'Killing Method',
 						'Gender','Nobility','Animals']
 	var totalByEpisode = [];
@@ -305,6 +318,7 @@ data = d3.csv(file, function(d) {
 			}
 		updateHeatmap();
 		updateTreemap();
+		fadeAll(1);
 		}
 	}
 
@@ -329,6 +343,7 @@ data = d3.csv(file, function(d) {
 			}
 		updateHeatmap();
 		updateTreemap();
+		fadeAll(1);
 		}
 	}
 	
@@ -360,8 +375,6 @@ data = d3.csv(file, function(d) {
 			}
 		updateHeatmap();
 		updateTreemap();
-		console.log(selectedRectHouse);
-		console.log(selectedCharacter);
 		}		
 	}
 
@@ -641,7 +654,6 @@ data = d3.csv(file, function(d) {
 	}
 
 	function mousemove2(d){
-		console.log(d)
 		if(currentLabel == 'Deaths')
 			tooltip3.html("Deaths: " + d.target.__data__.data.value)
 		else
@@ -909,21 +921,9 @@ data = d3.csv(file, function(d) {
 		[0.00044964, 0.00044964, 0.00044964, 0.002697842, 0, 0, 0, 0, 0, 0, 0.010791367, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0.003147482, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0.004946043, 0, 0, 0, 0, 0, 0.00044964, 0, 0.003147482, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0.003147482, 0, 0, 0.000899281, 0, 0, 0, 0, 0, 0] ,
 		[0.000899281, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0.002697842, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.002248201, 0, 0, 0, 0.00044964, 0, 0, 0, 0.00044964, 0, 0.00044964, 0, 0, 0, 0, 0.000899281, 0, 0, 0, 0, 0, 0, 0, 0.000899281, 0, 0, 0, 0.00044964, 0, 0, 0, 0, 0.002248201]]
   
-		
-	var file_chord = "data/names.csv"
-	data_chord = d3.csv(file_chord, function(d) {
-		return {
-			// extract important data features
-			killer : d['name'],
-			house : d['house'],
-			colors : d['color']
-		};
-	}).then(function (data_chord){
-		killers_chord = d3.map(data_chord, function(d){return d.killer;})
-		allegiance = d3.map(data_chord, function(d){return d.house;})
-		var colors = d3.map(data_chord, function(d){return d.colors;})
-	
-	  var width3="700", height3="700";
+	var colors;
+
+	var width3="700", height3="700";
 	  var svg3 = d3.select("#chord")
 		.append("svg")
 		  .attr("width", width3)
@@ -970,17 +970,19 @@ data = d3.csv(file, function(d) {
 		.selectAll("g")
 		.data(function(chords) { return chords.groups; })
 		.enter().append("g")
-		.on("mouseover", fade(.1))
-		.on("mouseout", fade(1))
-		.on("click", rectClick3);
+		.on("mouseover", function(d,i){
+			if (clickedHouse == undefined) return fade(d);
+		})
+		.on("mouseout", function(d){ 
+			if (clickedHouse == undefined) return fadeAll(1);
+		})
+		.on("click", function(d){ rectClick3(d); fadeAll(1); fade(d);});
 	  
 	  group.append("path")
 		  .style("fill", function(d) { return color(d.index); })
 		  .style("stroke", function(d) { return d3.rgb(color(d.index)).darker(); })
 		  .attr("d", arc)
-		  .on("mousemove", fade(.1))
 		  .on("mousemove", showTooltip())
-		  .on("mouseout", fade(1))
 		  .on("mouseout", hideTooltip());
 	  
 	  var groupTick = group.selectAll(".group-tick")
@@ -1030,22 +1032,41 @@ data = d3.csv(file, function(d) {
 		  };
 		});
 	  }
-	  
-	  function fade(opacity) {
-		  //console.log("FADE")
-		  //console.log(clickedHouse)
-		  //if(clickedHouse == undefined) {
-			return function(d, i) {
-			d3.selectAll("g.ribbons path")
-				.filter(function(d) {
-					return d.source.index != i.index && d.target.index!= i.index;
-				})
-				.transition()
-				.duration(60)
-				.style("opacity", opacity);  
-			};
-		//}	
+
+	  var selectedIndex;
+	  function fade(d) {
+		selectedIndex = d.target.__data__.index;
+		d3.selectAll("g.ribbons path")
+			.filter(function(d,i) {
+				return d.source.index != selectedIndex && d.target.index!= selectedIndex;
+			})
+			.transition()
+			.duration(60)
+			.style("opacity", 0.1); 
 	  }
+
+	  function fadeClick(opacity) {
+		return function(d, i) {
+		d3.selectAll("g.ribbons path")
+			.filter(function(d) {
+				return d.source.index != i.index && d.target.index!= i.index;
+			})
+			.transition()
+			.duration(60)
+			.style("opacity", opacity);  
+		};
+  }
+
+
+	  function fadeAll(opacity) {
+		console.log(opacity)
+		d3.selectAll("g.ribbons path")
+			.transition()
+			.duration(60)
+			.style("opacity", opacity);  
+  }
+
+
 	  
 	  function showTooltip() {
 		var p = d3.format(".2%"), q = d3.format(",.4r")
@@ -1091,6 +1112,6 @@ data = d3.csv(file, function(d) {
 			  .style('top', d.y - 20 + 'px')
 		};
 	  }
+	});
 })
-});
-
+	  
