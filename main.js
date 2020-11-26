@@ -226,8 +226,7 @@ data = d3.csv(file, function(d) {
 	}
 	function mousemove(d){
 		if (d.target.className.baseVal == "ebd"){
-			tooltip3.html("Approximate Book Death Season: " + d.target.__data__.ebds + "<br>" + 
-			"Approximate Book Death Episode: " + d.target.__data__.ebde)
+			tooltip3.html("Approximate Book Death: Season " + d.target.__data__.ebds + ", Episode " + d.target.__data__.ebde)
 			.style("position","absolute")
 			.style('left', d.x - 900+ 'px')
 			.style('top', d.y - 20 + 'px')
@@ -937,6 +936,7 @@ data = d3.csv(file, function(d) {
 		.style("opacity", 0)
 		.attr("class", "tooltip")
 		.style("background-color", "white")
+		.style("font-size", "15px")
 		.style("border", "solid")
 		.style("border-width", "2px")
 		.style("border-radius", "5px")
