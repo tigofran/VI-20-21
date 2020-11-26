@@ -1032,7 +1032,7 @@ data = d3.csv(file, function(d) {
 	  }
 
 	var selectedIndex;
-	 function fade(d) {
+	function fade(d) {
 		selectedIndex = d.target.__data__.index;
 		d3.selectAll("g.ribbons path")
 			.filter(function(d,i) {
