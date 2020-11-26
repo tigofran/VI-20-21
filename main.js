@@ -1042,7 +1042,7 @@ data = d3.csv(file, function(d) {
 			})
 			.transition()
 			.duration(60)
-			.style("opacity", 0.1); 
+			.style("opacity", 0.05); 
 	  }
 
 	  function fadeClick(opacity) {
