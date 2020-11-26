@@ -444,8 +444,11 @@ data = d3.csv(file, function(d) {
 
 	function filterClick(d){
 		if (clickedRect != undefined){
-			if (clickedSeason != undefined)
+			if (clickedSeason != undefined){
 				return d.season == clickedSeason && d.episode == clickedEpisode;
+			
+			}
+
 			else if (clickedMethod != undefined)
 				return d.method == clickedMethod;
 			else if (clickedHouse != undefined){
@@ -1011,11 +1014,11 @@ data = d3.csv(file, function(d) {
 		  .style("fill", function(d) { return color(d.source.index); })
 		  .style("stroke", function(d) { return d3.rgb(color(d.source.index)).darker(); })
 		  .on("mousemove", showTooltipArc())
-		  //.on("mouseover", fadeArc(0.1))
+		  .on("mouseover", fadeArc(0.1))
 		  .on("mouseout", function(d) {
 			tooltip3.style("opacity", 0);
 		  })
-		  //.on("mouseout", fadeArc(1));
+		  .on("mouseout", fadeArc(1));
 	  
 	  
 		function groupTicks(d, step) {
@@ -1041,27 +1044,13 @@ data = d3.csv(file, function(d) {
 			.style("opacity", 0.05); 
 	  }
 
-	  function fadeClick(opacity) {
-		return function(d, i) {
-		d3.selectAll("g.ribbons path")
-			.filter(function(d) {
-				return d.source.index != i.index && d.target.index!= i.index;
-			})
-			.transition()
-			.duration(60)
-			.style("opacity", opacity);  
-		};
-  }
-
-
+	  
 	  function fadeAll(opacity) {
-		console.log(opacity)
 		d3.selectAll("g.ribbons path")
 			.transition()
 			.duration(60)
 			.style("opacity", opacity);  
-  }
-
+  	}
 
 	  
 	  function showTooltip() {
@@ -1085,14 +1074,13 @@ data = d3.csv(file, function(d) {
 	  
 	  function fadeArc(opacity) {
 		return function(d, i) {
-		  d3.selectAll("g.ribbons path")
-			  .filter(function(d) {
-				console.log(d)
-				return d.target.__data__.source.index != i.index && d.target.__data__.target.index != i.index;
-			  })
-			.transition()
-			  .style("opacity", opacity);  
+			var hightLight = g.selectAll(".ribbons path").filter(function(d) { 
+				return d.source.index != i.source.index || d.target.index != i.target.index;
+			});
+			hightLight.transition()
+                    .style("opacity", opacity);  
 		};
+
 	  }
 
 	  function showTooltipArc() {
