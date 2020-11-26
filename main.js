@@ -172,7 +172,7 @@ data = d3.csv(file, function(d) {
 		.domain(episodes)
 		.padding(0.05);
 		svg.append("g")
-		.style("font-size", 15)
+		.style("font-size", "15px")
 		.attr("transform", "translate(0," + height + ")")
 		.call(d3.axisBottom(x).tickSize(0))
 		.select(".domain").remove()
@@ -183,7 +183,7 @@ data = d3.csv(file, function(d) {
 		.domain(seasons)
 		.padding(0.05);
 		svg.append("g")
-		.style("font-size", 15)
+		.style("font-size", "15px")
 		.call(d3.axisLeft(y).tickSize(0))
 		.select(".domain").remove()
 
@@ -414,7 +414,7 @@ data = d3.csv(file, function(d) {
 	  .attr("x", xlabelx)
 	  .attr("y", xlabely)
 	  .attr("text-anchor", "middle")
-	  .style("font-size", "18px")
+	  .style("font-size", "15px")
 	  .style("max-width", 400)
 	  .text("Episode");
 
@@ -426,7 +426,7 @@ data = d3.csv(file, function(d) {
 	.attr('transform', 'translate(' + ylabelx + ', ' + ylabely + ')')
 	.append('text')
 	.attr("text-anchor", "middle")
-	.style("font-size", "18px")
+	.style("font-size", "15px")
 	.attr("transform", "rotate(-90)")
 	.text("Season");
 
