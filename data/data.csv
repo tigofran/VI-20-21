@@ -2,7 +2,7 @@
 Alliser Thorne,Wildling,3,0.001348921,Night's Watch,#000000
 Animal,Animal,3,0.001348921,Animal,#E0EBDD
 Animal,Masters,1,0.00044964,Animal,#E0EBDD
-Animal,Night's Watch,9,0.0040467625899,Animal,#E0EBDD
+Animal,Night's Watch,9,0.004046763,Animal,#E0EBDD
 Animal,Other Lannisters,2,0.000899281,Animal,#E0EBDD
 Animal,Others,1,0.00044964,Animal,#E0EBDD
 Animal,Ramsay Bolton,1,0.00044964,Animal,#E0EBDD
@@ -170,7 +170,7 @@ Others,Other Lannisters,1,0.00044964,None,#9B878E
 Others,Other Starks,5,0.002248201,None,#9B878E
 Others,Other Targaryens,1,0.00044964,None,#9B878E
 Others,Others,5,0.002248201,None,#9B878E
-Others,Robert Baratheon,1,0.00044964,None,#9B878E
+Animal,Other Baratheons of King's Landing,1,0.00044964,Animal,#E0EBDD
 Others,Sons of the Harpy,1,0.00044964,None,#9B878E
 Others,Wildling,6,0.002697842,None,#9B878E
 Petyr Baelish,Arryns,1,0.00044964,House Baelish,#00C04D
