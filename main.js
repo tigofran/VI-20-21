@@ -232,13 +232,11 @@ data = d3.csv(file, function(d) {
 	// // Three functions that change the tooltip when user hover / move / leave a cell
 
 	function mouseover(d){
-	var strokecolor = d.target.style.stroke;
+	if (d.target.className.baseVal == "ebd" && currentLabel == 'Kills'){return;}
 	  tooltip3
 	    .style("opacity", 1)
 	  d3.select(this)
-	  .style("stroke", function(d){
-		return (strokecolor == 'green') ? 'green' : 'black';
-	})
+	  .style("stroke",'black')
 	    //.html("The exact value of<br>this cell is: " + d)
 		  //.style('left', d.screenX + 'px')
 		  //.style('top', d.screenY + 'px')
@@ -276,7 +274,7 @@ data = d3.csv(file, function(d) {
 			.style("opacity", 0)
 		d3.select(this)
 			.style("stroke", "red")
-			.style("opacity", 1)
+			.style("opacity", 0.8)
 		}
 		else{
 		tooltip3
@@ -548,15 +546,18 @@ data = d3.csv(file, function(d) {
 		squares.on("mouseleave", mouseleave)
 		squares.on("click", rectClick)
 
-		d3.selectAll('#ebd').style('stroke','none').style('stroke-width',0)
+		if(currentLabel == 'Kills'){
+			d3.selectAll('.ebd').style('stroke','none').style('stroke-width',0)
+		}
 
+		if(currentLabel == 'Deaths'){
 		if(selectedGroup == 'Character' && totalByEpisode[0].info != -1 ){
 			ebdSeason = totalByEpisode[0].info[0].estimatedBookDeathSeason;
 			ebdEpisode = totalByEpisode[0].info[0].estimatedBookDeathEpisode;
 			if (ebdSeason > -1 && ebdEpisode > -1){
 				svg.append("rect")
 					.data([{ebds: ebdSeason, ebde: ebdEpisode}])
-					.attr("id", "ebd")
+					.attr("class", "ebd")
 					.attr("x", x(ebdEpisode))
 					.attr("y", y(ebdSeason))
 					.attr("rx", 4)
@@ -566,12 +567,13 @@ data = d3.csv(file, function(d) {
 					.style("fill", "none")
 					.style("stroke-width", 7)
 					.style("stroke", "red")
-					.style("opacity", 1)
+					.style("opacity", 0.8)
 					.on("mouseover",mouseover) //depois do transition é preciso chamar  outra vez
 					.on("mousemove", mousemove)
 					.on("mouseleave", mouseleave)
 			}
 		}
+	}
 	  }
 
 	function updateSecondDropdown() {
