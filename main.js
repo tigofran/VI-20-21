@@ -73,7 +73,7 @@ data = d3.csv(file, function(d) {
 	var nobilityValues = ['Noble','Peasant'];
 	var animalDeathData = d3.map(data.filter(function(d) {return d.isAnimal == 1}), function(d){return d.character;})
 	var animalKillData = d3.map(data.filter(function(d) {return d.killerIsAnimal == 1}), function(d){return d.killer;})
-	var animalValues = Array.from([...new Set([...animalDeathData,...animalKillData])]).sort();
+	var animalValues = Array.from([...new Set(['All Animals',...animalDeathData,...animalKillData])]).sort();
 
 	
 	var secondDropdown = d3.select('#secondSelectButton')
@@ -491,6 +491,10 @@ data = d3.csv(file, function(d) {
 				return selectedSecond == 'Peasant' ? d.killerNobility == 0 : d.killerNobility == 1;
 				break;
 			case 'Animals':
+				if (selectedSecond == 'All Animals')
+					if (currentLabel == 'Deaths')
+						return d.allegiance == 'Animal';
+					return d.killershouse == 'Animal';
 				if (currentLabel == 'Deaths')
 					return d.character == selectedSecond;
 				return d.killer == selectedSecond;
