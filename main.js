@@ -73,7 +73,7 @@ data = d3.csv(file, function(d) {
 	var nobilityValues = ['Noble','Peasant'];
 	var animalDeathData = d3.map(data.filter(function(d) {return d.isAnimal == 1}), function(d){return d.character;})
 	var animalKillData = d3.map(data.filter(function(d) {return d.killerIsAnimal == 1}), function(d){return d.killer;})
-	var animalValues = Array.from([...new Set([...animalDeathData,...animalKillData])]).sort();
+	var animalValues = Array.from([...new Set(['All Animals',...animalDeathData,...animalKillData])]).sort();
 
 	
 	var secondDropdown = d3.select('#secondSelectButton')
@@ -84,12 +84,14 @@ data = d3.csv(file, function(d) {
 	var radiodeaths = d3.select("#radiodeaths").on("change", function(d){
 		currentLabel = "Deaths";
 		//updateTitle();
+		if (selectedGroup != undefined && selectedSecond == undefined) return;
 		updateHeatmap();
 		updateTreemap();
 	})
 	var radiokills = d3.select("#radiokills").on("change", function(d){
 		currentLabel = "Kills";
 		//updateTitle();
+		if (selectedGroup != undefined && selectedSecond == undefined) return;
 		updateHeatmap();
 		updateTreemap();
 	})
@@ -151,10 +153,12 @@ data = d3.csv(file, function(d) {
 		if(selectedGroup != undefined){
 			updateSecondDropdown(); //yupdate values on second dropdown menu
 			//updateHeatmap acontece no segundo dropdown
+			selectedSecond = undefined;
 		}
 		else{
 			updateHeatmap() //caso a opcao seja No Filter
 			updateTreemap()
+			selectedSecond = undefined;
 		}
 	})
 	
@@ -491,11 +495,16 @@ data = d3.csv(file, function(d) {
 				return selectedSecond == 'Peasant' ? d.killerNobility == 0 : d.killerNobility == 1;
 				break;
 			case 'Animals':
+				if (selectedSecond == 'All Animals')
+					if (currentLabel == 'Deaths')
+						return d.allegiance == 'Animal';
+					else
+						return d.killershouse == 'Animal';
 				if (currentLabel == 'Deaths')
 					return d.character == selectedSecond;
 				return d.killer == selectedSecond;
 				break;
-			default:			
+			default:
 				return d[selectedGroup.toLowerCase()] == selectedSecond;
 				break;
 		}
@@ -538,14 +547,16 @@ data = d3.csv(file, function(d) {
 		squares.on("mousemove", mousemove)
 		squares.on("mouseleave", mouseleave)
 		squares.on("click", rectClick)
-		
-		if(selectedGroup == 'Character' && totalByEpisode[0].info != -1){
+
+		d3.selectAll('#ebd').style('stroke','none').style('stroke-width',0)
+
+		if(selectedGroup == 'Character' && totalByEpisode[0].info != -1 ){
 			ebdSeason = totalByEpisode[0].info[0].estimatedBookDeathSeason;
 			ebdEpisode = totalByEpisode[0].info[0].estimatedBookDeathEpisode;
 			if (ebdSeason > -1 && ebdEpisode > -1){
 				svg.append("rect")
 					.data([{ebds: ebdSeason, ebde: ebdEpisode}])
-					.attr("class", "ebd")
+					.attr("id", "ebd")
 					.attr("x", x(ebdEpisode))
 					.attr("y", y(ebdSeason))
 					.attr("rx", 4)
