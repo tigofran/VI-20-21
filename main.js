@@ -115,19 +115,82 @@ data = d3.csv(file, function(d) {
 			// console.log("SG1 CR1");
 			epGroups = d3.group(data.filter(fil).filter(fil2), d => d.season, d => d.episode)
 		}
-		epGroups.forEach( function (vals, key) {
-			summary_vals = vals.forEach( function (val2, key2) {
-				currentSeason = key;
-				currentEpisode = key2;
-				return_object = {
-					season: key,
-					episode: key2,
-					val: val2.length,
-					info: epGroups.get(currentSeason).get(currentEpisode)
-				};
-				totalByEpisode.push(return_object)
-			});
-		});
+		console.log(epGroups)
+		totalByEpisode.push({season: 1,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season: 1,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season: 1,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season: 1,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season: 1,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season: 1,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season: 1,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season: 1,episode: 8, val:0, info: -1});
+		totalByEpisode.push({season: 1,episode: 9, val:0,info: -1});
+		totalByEpisode.push({season: 1,episode: 10, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season:2,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 8, val:0, info: -1});
+		totalByEpisode.push({season:2,episode: 9, val:0,info: -1});
+		totalByEpisode.push({season:2,episode: 10, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season:3,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 8, val:0, info: -1});
+		totalByEpisode.push({season:3,episode: 9, val:0,info: -1});
+		totalByEpisode.push({season:3,episode: 10, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season:4,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 8, val:0, info: -1});
+		totalByEpisode.push({season:4,episode: 9, val:0,info: -1});
+		totalByEpisode.push({season:4,episode: 10, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season:5,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 8, val:0, info: -1});
+		totalByEpisode.push({season:5,episode: 9, val:0,info: -1});
+		totalByEpisode.push({season:5,episode: 10, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season:6,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 8, val:0, info: -1});
+		totalByEpisode.push({season:6,episode: 9, val:0,info: -1});
+		totalByEpisode.push({season:6,episode: 10, val:0,info: -1});
+		totalByEpisode.push({season:7,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season:7,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season:7,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season:7,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season:7,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season:7,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season:7,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season:8,episode: 1, val:0, info: -1});
+		totalByEpisode.push({season:8,episode: 2, val:0,info: -1});
+		totalByEpisode.push({season:8,episode: 3, val:0,info: -1});
+		totalByEpisode.push({season:8,episode: 4, val:0,info: -1});
+		totalByEpisode.push({season:8,episode: 5, val:0,info: -1});
+		totalByEpisode.push({season:8,episode: 6, val:0,info: -1});
+		totalByEpisode.push({season:8,episode: 7, val:0,info: -1});
+		totalByEpisode.push({season:8,episode: 8, val:0, info: -1});
 		totalByEpisode.push({season: 7,episode: 8, val:undefined, info: -1});
 		totalByEpisode.push({season: 7,episode: 9, val:undefined,info: -1});
 		totalByEpisode.push({season: 7,episode: 10, val:undefined,info: -1});
@@ -135,6 +198,26 @@ data = d3.csv(file, function(d) {
 		totalByEpisode.push({season: 8,episode: 8, val:undefined,info: -1});
 		totalByEpisode.push({season: 8,episode: 9, val:undefined,info: -1});
 		totalByEpisode.push({season: 8,episode: 10, val:undefined,info: -1});
+		epGroups.forEach( function (vals, key) {
+			summary_vals = vals.forEach( function (val2, key2) {
+				currentSeason = key;
+				currentEpisode = key2;
+				return_object = {
+					season: parseInt(key),
+					episode: parseInt(key2),
+					val: val2.length,
+					info: epGroups.get(currentSeason).get(currentEpisode)
+				};
+				var a = totalByEpisode.find(d => d.season == currentSeason && d.episode == currentEpisode)
+				a.season = return_object.season;
+				a.episode = return_object.episode;
+				a.val = return_object.val;
+				a.info = return_object.info;
+			});
+		});
+		console.log(totalByEpisode)
+		
+		
 		return totalByEpisode;
 	}
 	createGroups(null);
@@ -210,10 +293,13 @@ data = d3.csv(file, function(d) {
 	// Build color scale
 	function setColorDomain(dataset){
 		min = d3.min(dataset, function (d) { return d.val})
+		if (min == 0) min = 1;
 		max = d3.max(dataset, function (d) { return d.val})
+		if (max == 0) max = 1;
 	}
 
-	setColorDomain(totalByEpisode);
+	setColorDomain(totalByEpisode); //first time: set colorscale to all episodes
+
 	var myColor = d3.scaleSequentialLog()
 	.interpolator(d3.interpolateReds)
 	.domain([min/2,max])
@@ -232,7 +318,7 @@ data = d3.csv(file, function(d) {
 	// // Three functions that change the tooltip when user hover / move / leave a cell
 
 	function mouseover(d){
-	if (d.target.className.baseVal == "ebd" && currentLabel == 'Kills'){return;}
+	if (d.target.className.baseVal == "ebd" && currentLabel == 'Kills' || d.target.__data__.val == 0){return;}
 	  tooltip3
 	    .style("opacity", 1)
 	  d3.select(this)
@@ -243,7 +329,7 @@ data = d3.csv(file, function(d) {
 
 	}
 	function mousemove(d){
-		if (d.target.className.baseVal == "ebd"){
+		if (d.target.className.baseVal == "ebd" || d.target.__data__.val == 0){
 			tooltip3.html("Approximate Book Death: Season " + d.target.__data__.ebds + ", Episode " + d.target.__data__.ebde)
 			.style("position","absolute")
 			.style('left', d.x - 900+ 'px')
@@ -298,7 +384,7 @@ data = d3.csv(file, function(d) {
 	var allegiance;
 
 	function rectClick(d){
-		if (d.target.__data__.val != undefined){
+		if (d.target.__data__.val != undefined && d.target.__data__.val != 0){
 			clickedRect = d.target;
 			if (previousRectSeason != selectedRectSeason && previousRectEpisode != selectedRectEpisode){
 				previousRectSeason = selectedRectSeason;
@@ -400,6 +486,7 @@ data = d3.csv(file, function(d) {
 		.attr("height", y.bandwidth() )
 		.style("fill", function(d) {
 			if (d.val == undefined) return "#888888";
+			if (d.val == 0) return "#ffffff";
 			else return myColor(d.val)} )
 		.style("stroke-width", 4)
 		.style("stroke", "none")
@@ -523,21 +610,22 @@ data = d3.csv(file, function(d) {
 		// console.log(clickFilter);
 		// console.log(menuFilter);
 		var dataFilter = createGroups(clickFilter,menuFilter);
-		setColorDomain(dataFilter);
 		squares = svg.selectAll("rect")
 			.data(dataFilter)
 			.join("rect")
-		squares.transition()
-			.duration(1000)
-			.style("fill", function(d) {
-			  if (d.val == undefined) return "#888888";
-			  else return myColor(d.val);} )
-			.attr("x", function(d) { return x(d.episode) })
-			.attr("y", function(d) { return y(d.season) })
 			.attr("rx", 4)
 			.attr("ry", 4)
 			.attr("width", x.bandwidth() )
 			.attr("height", y.bandwidth() )
+		squares.transition()
+			.duration(750)
+			.attr("x", function(d) { return x(d.episode) })
+			.attr("y", function(d) { return y(d.season) })
+			.style("fill", function(d) {
+				setColorDomain(totalByEpisode);	
+				if (d.val == undefined) return "#888888";
+				if (d.val == 0) return "#ffffff";
+				else return myColor(d.val);} )
 		squares.style("stroke-width", 4) //chama-se squares outra vez por causa do stroke
 			.style("stroke", "none")
 			.style("opacity", 0.8)
@@ -551,9 +639,10 @@ data = d3.csv(file, function(d) {
 		}
 
 		if(currentLabel == 'Deaths'){
-		if(selectedGroup == 'Character' && totalByEpisode[0].info != -1 ){
-			ebdSeason = totalByEpisode[0].info[0].estimatedBookDeathSeason;
-			ebdEpisode = totalByEpisode[0].info[0].estimatedBookDeathEpisode;
+		if(selectedGroup == 'Character' && totalByEpisode.find(d => d.val != 0) != undefined){
+			var ebdRect = totalByEpisode.find(d => d.val != 0)
+			ebdSeason = ebdRect.info[0].estimatedBookDeathSeason;
+			ebdEpisode = ebdRect.info[0].estimatedBookDeathEpisode;
 			if (ebdSeason > -1 && ebdEpisode > -1){
 				svg.append("rect")
 					.data([{ebds: ebdSeason, ebde: ebdEpisode}])
@@ -811,7 +900,7 @@ data = d3.csv(file, function(d) {
 			.data(rootLeaves)
 			.join("rect")
 		squares2.transition()
-			.duration(1000)
+			.duration(750)
 			.attr('x', function (d) { return d.x0; })
 			.attr('y', function (d) { return d.y0; })
 			.attr('width', function (d) { return d.x1 - d.x0; })
@@ -828,7 +917,7 @@ data = d3.csv(file, function(d) {
 			.data(rootLeaves)
 			.join("text")
 		text.transition()
-			.duration(1000)
+			.duration(750)
 			.attr("x", function(d){ return d.x0+10})    // +10 to adjust position (right)
 			.attr("y", function(d){ return d.y0+20})    // +20 to adjust position (down)
 			.text(function(d){ return d.data.Method})
