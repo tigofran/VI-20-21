@@ -185,6 +185,7 @@ data = d3.csv(file, function(d) {
 		for (let ind of iterator)
 			sizes.push(ind.val)
 		maxBook = (Math.max.apply(Math, sizes) != 0) ? Math.max.apply(Math, sizes) : 1
+		return totalByBook;
 	}
 
 	createGroups(null);
@@ -331,6 +332,7 @@ data = d3.csv(file, function(d) {
 	var clickedSeason;
 	var clickedEpisode;
 	var clickedMethod;
+	var clickedBook;
 	var previousRectSeason;
 	var previousRectEpisode;
 	var selectedRectSeason;
@@ -361,6 +363,7 @@ data = d3.csv(file, function(d) {
 				clickedEpisode = clickedRect.__data__.episode;
 				clickedMethod = undefined;
 				clickedHouse = undefined;
+				clickedBook = undefined;
 			}
 		updateHeatmap();
 		updateTreemap();
@@ -387,6 +390,7 @@ data = d3.csv(file, function(d) {
 				clickedSeason = undefined;
 				clickedMethod = clickedRect.__data__.data.Method;
 				clickedHouse = undefined;
+				clickedBook = undefined;
 			}
 		updateHeatmap();
 		updateTreemap();
@@ -420,11 +424,38 @@ data = d3.csv(file, function(d) {
 				clickedMethod = undefined;
 				clickedHouse = allegiance[clickedRect.__data__.index];
 				selectedCharacter = killers_chord[clickedRect.__data__.index];
+				clickedBook = undefined;
 			}
 		updateHeatmap();
 		updateTreemap();
 		updateBarchart();
 		}		
+	}
+	var previousRectBook, selectedRectBook;
+	function rectClick4(d){
+		if (d.target.__data__ != undefined){
+		clickedRect = d.target;
+		if (previousRectBook != selectedRectBook)
+			previousRectBook = selectedRectBook;
+		else				
+			previousRectBook = undefined;
+		selectedRectBook = clickedRect.__data__.book;
+		if (previousRectBook == selectedRectBook){
+				clickedRect = undefined;
+				clickFilter = undefined;
+				clickedBook = undefined;
+			}else{
+				clickedEpisode = undefined;
+				clickedSeason = undefined;
+				clickedMethod = undefined;
+				clickedHouse = undefined;
+				clickedBook = clickedRect.__data__.book.toLowerCase();
+			}
+		updateHeatmap();
+		updateTreemap();
+		updateBarchart();
+		fadeAll(1);
+		}
 	}
 
 
@@ -487,6 +518,9 @@ data = d3.csv(file, function(d) {
 				if(currentLabel == 'Deaths')
 					return d.allegiance == clickedHouse;
 				return d.killershouse == clickedHouse;
+			}
+			else if (clickedBook != undefined){
+				return d[clickedBook] == 1;
 			}
 		}
 	}
@@ -1190,7 +1224,7 @@ data = d3.csv(file, function(d) {
 			.on("mouseover",mouseover4)
 			.on("mousemove", mousemove4)
 			.on("mouseleave", mouseleave4)
-
+			.on("click", rectClick4)
 	}
 
 	createBarchart();
@@ -1228,10 +1262,10 @@ data = d3.csv(file, function(d) {
 			menuFilter = function(d){return filterData(d);}
 		}
 		var barFilter = createGroupsBar(clickFilter,menuFilter);
-		yBar.domain([0, maxBook+1]);
+		yBar.domain([0, Math.ceil(maxBook / 10) * 10]);
 		svgBar.select(".y.axis").transition().duration(750).call(d3.axisLeft(yBar))
 		bars = svgBar.selectAll("rect")
-			.data(totalByBook)
+			.data(barFilter)
 			.join("rect")
 			.style('opacity',0.9)
 			bars.transition()
@@ -1248,7 +1282,7 @@ data = d3.csv(file, function(d) {
 		bars.on("mouseover",mouseover4) //depois do transition é preciso chamar bars outra vez
 		bars.on("mousemove", mousemove4)
 		bars.on("mouseleave", mouseleave4)
-
+		bars.on("click", rectClick4)		
 		}
 	});
 })
