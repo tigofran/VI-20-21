@@ -1,5 +1,5 @@
 var previousRectHouse, selectedRectHouse, clickedHouse, selectedCharacter, names_order, color_order, names = [], allegiances_chord = [];
-var file = "GOT_deaths.csv"
+var file = "data/GOT_deaths.csv"
 var chord_names = "data/names.csv"
 data = d3.csv(file, function(d) {
   return {
@@ -425,8 +425,6 @@ data = d3.csv(file, function(d) {
 				clickedMethod = undefined;
 				clickedHouse = allegiances_chord[clickedRect.__data__.index];
 				selectedCharacter = names[clickedRect.__data__.index];
-				clickedHouse = allegiance[clickedRect.__data__.index];
-				selectedCharacter = killers_chord[clickedRect.__data__.index];
 				clickedBook = undefined;
 			}
 		//console.log(clickedHouse)
