@@ -44,7 +44,7 @@ data = d3.csv(file, function(d) {
 	var selectedSecond;
 	var min;
 	var max;
-	var title;
+	var maxBook;
 	// add the options to the button
 	var dropdown = d3.select("#selectButton")
 	.selectAll()
@@ -55,7 +55,8 @@ data = d3.csv(file, function(d) {
 	.attr("value", function (d) { return d; }) // corresponding value returned by the button
 
 	var seasonValues = ['1','2','3','4','5','6','7','8'];
-	var bookValues = ['GoT','CoK','SoS','FfC','DwD']
+	var episodeValues = ['1','2','3','4','5','6','7','8','9','10'];
+	var bookValues = ['GoT','CoK','SoS','FfC','DwD'];
 	var characterDeathData = d3.map(data.filter(function(d){ return d.isAnimal == 0;}), function(d){return d.character});
 	var characterKillData = d3.map(data.filter(function(d){ return d.killerIsAnimal == 0;}), function(d){return d.killer;})
 	var characterValues = Array.from([...new Set([...characterKillData,...characterDeathData])]).sort();
@@ -70,7 +71,6 @@ data = d3.csv(file, function(d) {
 	var animalKillData = d3.map(data.filter(function(d) {return d.killerIsAnimal == 1}), function(d){return d.killer;})
 	var animalValues = Array.from([...new Set(['All Animals',...animalDeathData,...animalKillData])]).sort();
 
-	
 	var secondDropdown = d3.select('#secondSelectButton')
 	.style('visibility','hidden');
 
@@ -78,23 +78,22 @@ data = d3.csv(file, function(d) {
 
 	var radiodeaths = d3.select("#radiodeaths").on("change", function(d){
 		currentLabel = "Deaths";
-		//updateTitle();
 		if (selectedGroup != undefined && selectedSecond == undefined) return;
 		updateHeatmap();
 		updateTreemap();
 		updateChord();
+		updateBarchart();
 	})
 	var radiokills = d3.select("#radiokills").on("change", function(d){
 		currentLabel = "Kills";
-		//updateTitle();
 		if (selectedGroup != undefined && selectedSecond == undefined) return;
 		updateHeatmap();
 		updateTreemap();
 		updateChord();
+		updateBarchart();
 	})
 
-
-	function createGroups(fil,fil2){
+	function createGroups(fil1,fil2){
 		totalByEpisode = [];
 		if(selectedGroup == undefined && clickedRect == undefined){
 			// console.log("SG0 CR0");
@@ -102,7 +101,7 @@ data = d3.csv(file, function(d) {
 		}
 		else if (selectedGroup == undefined && clickedRect != undefined){
 			// console.log("SG0 CR1");
-			epGroups = d3.group(data.filter(fil), d => d.season, d => d.episode)
+			epGroups = d3.group(data.filter(fil1), d => d.season, d => d.episode)
 		}
 		else if (selectedGroup != undefined && clickedRect == undefined){
 			// console.log("SG1 CR0");
@@ -110,91 +109,29 @@ data = d3.csv(file, function(d) {
 		}
 		else{
 			// console.log("SG1 CR1");
-			epGroups = d3.group(data.filter(fil).filter(fil2), d => d.season, d => d.episode)
+			epGroups = d3.group(data.filter(fil1).filter(fil2), d => d.season, d => d.episode)
 		}
-		//console.log(epGroups)
-		totalByEpisode.push({season: 1,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season: 1,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season: 1,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season: 1,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season: 1,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season: 1,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season: 1,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season: 1,episode: 8, val:0, info: -1});
-		totalByEpisode.push({season: 1,episode: 9, val:0,info: -1});
-		totalByEpisode.push({season: 1,episode: 10, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season:2,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 8, val:0, info: -1});
-		totalByEpisode.push({season:2,episode: 9, val:0,info: -1});
-		totalByEpisode.push({season:2,episode: 10, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season:3,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 8, val:0, info: -1});
-		totalByEpisode.push({season:3,episode: 9, val:0,info: -1});
-		totalByEpisode.push({season:3,episode: 10, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season:4,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 8, val:0, info: -1});
-		totalByEpisode.push({season:4,episode: 9, val:0,info: -1});
-		totalByEpisode.push({season:4,episode: 10, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season:5,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 8, val:0, info: -1});
-		totalByEpisode.push({season:5,episode: 9, val:0,info: -1});
-		totalByEpisode.push({season:5,episode: 10, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season:6,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 8, val:0, info: -1});
-		totalByEpisode.push({season:6,episode: 9, val:0,info: -1});
-		totalByEpisode.push({season:6,episode: 10, val:0,info: -1});
-		totalByEpisode.push({season:7,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season:7,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season:7,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season:7,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season:7,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season:7,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season:7,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season:8,episode: 1, val:0, info: -1});
-		totalByEpisode.push({season:8,episode: 2, val:0,info: -1});
-		totalByEpisode.push({season:8,episode: 3, val:0,info: -1});
-		totalByEpisode.push({season:8,episode: 4, val:0,info: -1});
-		totalByEpisode.push({season:8,episode: 5, val:0,info: -1});
-		totalByEpisode.push({season:8,episode: 6, val:0,info: -1});
-		totalByEpisode.push({season:8,episode: 7, val:0,info: -1});
-		totalByEpisode.push({season:8,episode: 8, val:0, info: -1});
-		totalByEpisode.push({season: 7,episode: 8, val:undefined, info: -1});
-		totalByEpisode.push({season: 7,episode: 9, val:undefined,info: -1});
-		totalByEpisode.push({season: 7,episode: 10, val:undefined,info: -1});
-		totalByEpisode.push({season: 8,episode: 7, val:undefined,info: -1});
-		totalByEpisode.push({season: 8,episode: 8, val:undefined,info: -1});
-		totalByEpisode.push({season: 8,episode: 9, val:undefined,info: -1});
-		totalByEpisode.push({season: 8,episode: 10, val:undefined,info: -1});
+		var i = 1, j = 1;
+		for ( i; i < 9; i++){
+			for (j; j< 11; j++){
+				totalByEpisode.push({season: i,episode: j, val:0, info: -1});
+			}
+			j = 1;
+		}
+		var a = totalByEpisode.find(d => d.season == 7 && d.episode == 8)
+		a.val = undefined;
+		a = totalByEpisode.find(d => d.season == 7 && d.episode == 9)
+		a.val = undefined;
+		a = totalByEpisode.find(d => d.season == 7 && d.episode == 10)
+		a.val = undefined;
+		a = totalByEpisode.find(d => d.season == 8 && d.episode == 7)
+		a.val = undefined;
+		a = totalByEpisode.find(d => d.season == 8 && d.episode == 8)
+		a.val = undefined;
+		a = totalByEpisode.find(d => d.season == 8 && d.episode == 9)
+		a.val = undefined;
+		a = totalByEpisode.find(d => d.season == 8 && d.episode == 10)
+		a.val = undefined;
 		epGroups.forEach( function (vals, key) {
 			summary_vals = vals.forEach( function (val2, key2) {
 				currentSeason = key;
@@ -205,23 +142,53 @@ data = d3.csv(file, function(d) {
 					val: val2.length,
 					info: epGroups.get(currentSeason).get(currentEpisode)
 				};
-				var a = totalByEpisode.find(d => d.season == currentSeason && d.episode == currentEpisode)
-				a.season = return_object.season;
-				a.episode = return_object.episode;
-				a.val = return_object.val;
-				a.info = return_object.info;
+				var datasetEpisode = totalByEpisode.find(d => d.season == currentSeason && d.episode == currentEpisode)
+				datasetEpisode.season = return_object.season;
+				datasetEpisode.episode = return_object.episode;
+				datasetEpisode.val = return_object.val;
+				datasetEpisode.info = return_object.info;
 			});
 		});
-		//console.log(totalByEpisode)
-		
-		
 		return totalByEpisode;
 	}
-	createGroups(null);
 
-    // When the button is changed, run the updateChart function
+	function createGroupsBar(fil1,fil2){
+		totalByBook = [];
+		if(selectedGroup == undefined && clickedRect == undefined){
+			bookGroups = data;
+		}
+		else if (selectedGroup == undefined && clickedRect != undefined){
+			bookGroups = data.filter(fil1);
+		}
+		else if (selectedGroup != undefined && clickedRect == undefined){
+			bookGroups = data.filter(fil2);
+		}
+		else{
+			bookGroups = data.filter(fil1).filter(fil2);
+		}
+		var gotValues = bookGroups.filter(function(d){return d.got == 1;})
+		var cokValues = bookGroups.filter(function(d){return d.cok == 1;})
+		var sosValues = bookGroups.filter(function(d){return d.sos == 1;})
+		var ffcValues = bookGroups.filter(function(d){return d.ffc == 1;})
+		var dwdValues = bookGroups.filter(function(d){return d.dwd == 1;})
+		totalByBook.push({book:'GoT', fullbook:"A Game of Thrones", val: gotValues.length, info: gotValues})
+		totalByBook.push({book:'CoK', fullbook:"A Clash of Kings",val: cokValues.length, info: cokValues})
+		totalByBook.push({book:'SoS', fullbook:"A Storm of Swords",val: sosValues.length, info: gotValues})
+		totalByBook.push({book:'FfC', fullbook:"A Feast for Crows",val: ffcValues.length, info: ffcValues})
+		totalByBook.push({book:'DwD', fullbook:"A Dance with Dragons",val: dwdValues.length, info: dwdValues})
+		
+		var sizes = []
+		var iterator = totalByBook.values();
+		for (let ind of iterator)
+			sizes.push(ind.val)
+		maxBook = (Math.max.apply(Math, sizes) != 0) ? Math.max.apply(Math, sizes) : 1
+		return totalByBook;
+	}
+
+	createGroups(null);
+	createGroupsBar(null);
+
     d3.select("#selectButton").on("change", function(d) {
-		// recover the option that has been chosen
 		secondDropdown.selectAll('*').remove()
 		selectedGroup = d3.select(this).property("value"); //value of first dropdown
 		if (selectedGroup == 'No Filter'){
@@ -239,22 +206,18 @@ data = d3.csv(file, function(d) {
 			updateHeatmap() //caso a opcao seja No Filter
 			updateTreemap()
 			updateChord()
+			updateBarchart()
 			selectedSecond = undefined;
 		}
 	})
 	
 	d3.select("#secondSelectButton").on("change", function(d) {
-		// recover the option that has been chosen
 		selectedSecond = d3.select(this).property("value");
 		updateHeatmap()
 		updateTreemap()
 		updateChord()
+		updateBarchart()
 	})
-
-	// Labels of row and columns -> unique identifier of the column called 'group' and 'variable'
-	var seasons = ['1','2','3','4','5','6','7','8']
-	var episodes = ['1', '2', '3', '4', '5', '6', 
-                   '7', '8', '9', '10']
 
 	// set the dimensions and margins of the graph
 	var margin = {top: 80, right: 0, bottom: 50, left: 80},
@@ -271,7 +234,7 @@ data = d3.csv(file, function(d) {
 	// Build X scales and axis:
 	var x = d3.scaleBand()
 		.range([ 0, width ])
-		.domain(episodes)
+		.domain(episodeValues)
 		.padding(0.05);
 		svg.append("g")
 		.style("font-size", "15px")
@@ -282,7 +245,7 @@ data = d3.csv(file, function(d) {
 	// // Build Y scales and axis:
 	var y = d3.scaleBand()
 		.range([ height, 0 ])
-		.domain(seasons)
+		.domain(seasonValues)
 		.padding(0.05);
 		svg.append("g")
 		.style("font-size", "15px")
@@ -297,24 +260,20 @@ data = d3.csv(file, function(d) {
 		if (max == 0) max = 1;
 	}
 
+	function setColorDomainMap(array){
+		var sizes = [];
+		var iterator = array.values();
+		for (let ind of iterator)
+			sizes.push(ind.val)
+		min = (Math.min.apply(Math, sizes) != 0) ? Math.min.apply(Math, sizes) : 1
+		max = (Math.max.apply(Math, sizes) != 0) ? Math.max.apply(Math, sizes) : 1
+	}
+
 	setColorDomain(totalByEpisode); //first time: set colorscale to all episodes
 
 	var myColor = d3.scaleSequentialLog()
 	.interpolator(d3.interpolateReds)
 	.domain([min/2,max])
-
-	// // // create a tooltip
-	// var tooltip = d3.select("#heatmap")
-	//   .append("div")
-	//   .style("opacity", 0)
-	//   .attr("class", "tooltip")
-	//   .style("background-color", "white")
-	//   .style("border", "solid")
-	//   .style("border-width", "2px")
-	//   .style("border-radius", "5px")
-	//   .style("padding", "5px")
-
-	// // Three functions that change the tooltip when user hover / move / leave a cell
 
 	function mouseover(d){
 	if (d.target.className.baseVal == "ebd" && currentLabel == 'Kills' || d.target.__data__.val == 0){return;}
@@ -322,9 +281,6 @@ data = d3.csv(file, function(d) {
 	    .style("opacity", 1)
 	  d3.select(this)
 	  .style("stroke",'black')
-	    //.html("The exact value of<br>this cell is: " + d)
-		  //.style('left', d.screenX + 'px')
-		  //.style('top', d.screenY + 'px')
 
 	}
 	function mousemove(d){
@@ -375,6 +331,7 @@ data = d3.csv(file, function(d) {
 	var clickedSeason;
 	var clickedEpisode;
 	var clickedMethod;
+	var clickedBook;
 	var previousRectSeason;
 	var previousRectEpisode;
 	var selectedRectSeason;
@@ -405,10 +362,12 @@ data = d3.csv(file, function(d) {
 				clickedEpisode = clickedRect.__data__.episode;
 				clickedMethod = undefined;
 				clickedHouse = undefined;
+				clickedBook = undefined;
 			}
 		updateHeatmap();
 		updateTreemap();
 		updateChord();
+		updateBarchart();
 		fadeAll(1);
 		}
 	}
@@ -431,10 +390,12 @@ data = d3.csv(file, function(d) {
 				clickedSeason = undefined;
 				clickedMethod = clickedRect.__data__.data.Method;
 				clickedHouse = undefined;
+				clickedBook = undefined;
 			}
 		updateHeatmap();
 		updateTreemap();
 		updateChord();
+		updateBarchart();
 		fadeAll(1);
 		}
 	}
@@ -464,16 +425,45 @@ data = d3.csv(file, function(d) {
 				clickedMethod = undefined;
 				clickedHouse = allegiances_chord[clickedRect.__data__.index];
 				selectedCharacter = names[clickedRect.__data__.index];
+				clickedHouse = allegiance[clickedRect.__data__.index];
+				selectedCharacter = killers_chord[clickedRect.__data__.index];
+				clickedBook = undefined;
 			}
 		//console.log(clickedHouse)
 		updateHeatmap();
 		updateTreemap();
+		updateBarchart();
 		}		
+	}
+	var previousRectBook, selectedRectBook;
+	function rectClick4(d){
+		if (d.target.__data__ != undefined){
+		clickedRect = d.target;
+		if (previousRectBook != selectedRectBook)
+			previousRectBook = selectedRectBook;
+		else				
+			previousRectBook = undefined;
+		selectedRectBook = clickedRect.__data__.book;
+		if (previousRectBook == selectedRectBook){
+				clickedRect = undefined;
+				clickFilter = undefined;
+				clickedBook = undefined;
+			}else{
+				clickedEpisode = undefined;
+				clickedSeason = undefined;
+				clickedMethod = undefined;
+				clickedHouse = undefined;
+				clickedBook = clickedRect.__data__.book.toLowerCase();
+			}
+		updateHeatmap();
+		updateTreemap();
+		updateBarchart();
+		updateChord();
+		fadeAll(1);
+		}
 	}
 
 
-	titlex = width / 2
-	titley = -25
 	// // add the squares
 	function createHeatmap(){
 		heatmap = svg.selectAll()
@@ -497,24 +487,12 @@ data = d3.csv(file, function(d) {
 		.on("mousemove", mousemove)
 		.on("mouseleave", mouseleave)
 		.on("click",rectClick)
-
-		// // Add title to graph
-		// title = svg.append("text")
-		// .attr("x", titlex)
-		// .attr("y", titley)
-		// .attr("text-anchor", "middle")
-		// .style("font-size", "22px")
-		// .text(function() {return  currentLabel + " in Game of Thrones"});
 	  }
 	  
 	  createHeatmap();
 
-	//   function updateTitle(){
-	// 	  title.text(function() {return  currentLabel + " in Game of Thrones"});
-	//   }
-
 	xlabelx = width / 2;
-	xlabely = height + 40;
+	xlabely = height + 30;
 
 	svg.append("text")
 	  .attr("x", xlabelx)
@@ -527,7 +505,6 @@ data = d3.csv(file, function(d) {
 	ylabelx = -25;
 	ylabely = height / 2;
 
-	// adapted from https://stackoverflow.com/a/30417969
 	svg.append("g")
 	.attr('transform', 'translate(' + ylabelx + ', ' + ylabely + ')')
 	.append('text')
@@ -546,6 +523,9 @@ data = d3.csv(file, function(d) {
 				if(currentLabel == 'Deaths')
 					return d.allegiance == clickedHouse;
 				return d.killershouse == clickedHouse;
+			}
+			else if (clickedBook != undefined){
+				return d[clickedBook] == 1;
 			}
 		}
 	}
@@ -602,15 +582,12 @@ data = d3.csv(file, function(d) {
 
 	 // A function that update the chart
 	 function updateHeatmap() {
-		// Create new data with the selection?
 		if (clickedRect != undefined){
 			clickFilter = function(d){return filterClick(d);}
 		}
 		if (selectedGroup != undefined){
 			menuFilter = function(d){return filterData(d);}
 		}
-		// console.log(clickFilter);
-		// console.log(menuFilter);
 		var dataFilter = createGroups(clickFilter,menuFilter);
 		squares = svg.selectAll("rect")
 			.data(dataFilter)
@@ -706,7 +683,7 @@ data = d3.csv(file, function(d) {
 		}
 	}
 
-	/////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	var methodTreeData = [];
 
@@ -931,7 +908,7 @@ data = d3.csv(file, function(d) {
 				return "black" });
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	var matrix, colors;
 	var totalChord = 0;
@@ -1300,5 +1277,118 @@ data = d3.csv(file, function(d) {
 			  .attr("opacity", 0)
 			  .remove();
 	}
-})
+
+	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	var marginBar = {top: 30, right: 30, bottom: 70, left: 60},
+	widthBar = 400 - marginBar.left - marginBar.right,
+	heightBar = 400 - marginBar.top - marginBar.bottom;
+
+	var svgBar = d3.select("#barchart")
+	.append("svg")
+		.attr("width", widthBar + marginBar.left + marginBar.right)
+		.attr("height", heightBar + marginBar.top + marginBar.bottom)
+	.append("g")
+		.attr("transform",
+			"translate(" + marginBar.left + "," + marginBar.top + ")");
+	
+	// barchart X axis
+	var xBar = d3.scaleBand()
+		.range([0,widthBar])
+		.domain(bookValues)
+		.padding(0.2)
+		svgBar.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + heightBar + ")")
+		.call(d3.axisBottom(xBar).tickSizeOuter(0))
+		.selectAll("text")
+		.attr("transform", "translate(-10,0)rotate(-45)")
+		.style("text-anchor", "end")
+
+		// barchart Y axis
+	var yBar = d3.scaleLinear()
+		.domain([0, maxBook+1])
+		.range([heightBar, 0]);
+		svgBar.append("g")
+		.attr("class", "y axis")
+		.call(d3.axisLeft(yBar))
+		
+	function createBarchart(){
+		barchart = svgBar.selectAll("bars")
+		.data(totalByBook)
+		.enter()
+		.append("rect")
+		.attr("x", function(d) { return xBar(d.book); })
+		.attr("y", function(d) { return yBar(d.val); })
+		.attr("width", xBar.bandwidth())
+		.style('opacity',0.9)
+		.attr("height", function(d) { return heightBar - yBar(d.val); })
+		.style("fill", function(d) {
+			setColorDomainMap(totalByBook);
+			if (d.val == undefined) return "#888888";
+			if (d.val == 0) return "#ffffff";
+			else return myColor(d.val)} )
+			.on("mouseover",mouseover4)
+			.on("mousemove", mousemove4)
+			.on("mouseleave", mouseleave4)
+			.on("click", rectClick4)
+	}
+
+	createBarchart();
+			
+	function mouseover4(d){
+		if (d.target.__data__.val){
+			tooltip3
+				.style("opacity", 1)
+			d3.select(this)
+				.style("stroke-width", 4)
+				.style("stroke", 'black');
+		}
+	}
+
+	function mousemove4(d){
+		tooltip3.html("Characters in " + d.target.__data__.fullbook + ": " + d.target.__data__.val)
+		tooltip3
+			.style("position","absolute")
+			.style('left', d.x - 900+ 'px')
+			.style('top', d.y - 20 + 'px')
+	}
+
+	function mouseleave4(d){
+		tooltip3
+			.style("opacity", 0)
+		d3.select(this)
+			.style("stroke", 'none');
+	}
+
+	function updateBarchart() {
+		if (clickedRect != undefined){
+			clickFilter = function(d){return filterClick(d);}
+		}
+		if (selectedGroup != undefined){
+			menuFilter = function(d){return filterData(d);}
+		}
+		var barFilter = createGroupsBar(clickFilter,menuFilter);
+		yBar.domain([0, Math.ceil(maxBook / 10) * 10]);
+		svgBar.select(".y.axis").transition().duration(750).call(d3.axisLeft(yBar))
+		bars = svgBar.selectAll("rect")
+			.data(barFilter)
+			.join("rect")
+			.style('opacity',0.9)
+			bars.transition()
+			.duration(750)
+			.attr("width", xBar.bandwidth())
+			.attr("height", function(d) { return heightBar - yBar(d.val); })
+			.attr("y", function(d) { return yBar(d.val); })
+			.attr("x", function(d) { return xBar(d.book); })
+			.style("fill", function(d) {
+				if (d.val == undefined) return "#888888";
+				if (d.val == 0) return "#ffffff";
+				else return myColor(d.val);} )
+		bars.style("opacity", 0.8)
+		bars.on("mouseover",mouseover4) //depois do transition é preciso chamar bars outra vez
+		bars.on("mousemove", mousemove4)
+		bars.on("mouseleave", mouseleave4)
+		bars.on("click", rectClick4)		
+		}
+	});
 })
