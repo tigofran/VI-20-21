@@ -42,6 +42,16 @@ data = d3.csv(file, function(d) {
 		nobility_chord = d3.map(data_chord, function(d){return d.nobility;})
 		gender_chord = d3.map(data_chord, function(d){return d.gender;})
 
+		var svgMap
+		d3.xml("images/map.svg")
+		.then(data => {
+			svgMap = d3.select("#svg-container").node().append(data.documentElement)
+			// .call(d3.zoom().on("zoom", function () {
+			// 	svg.attr("transform", d3.event.transform)
+			//  }))
+			// console.log(svgMap)
+		});
+
 	var filterGroups = ['No Filter','Season','Books','Character','House', 'Killing Method',
 						'Gender','Nobility','Animals']
 	var totalByEpisode = [];
