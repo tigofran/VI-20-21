@@ -908,8 +908,7 @@ data = d3.csv(file, function(d) {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	var matrix, colors;
-	var totalChord = 0;
+	var matrix, colors, totalChord;
 	
 	function createGroupsChord(fil,fil2){
 		list_chord = [];
@@ -952,12 +951,9 @@ data = d3.csv(file, function(d) {
 	
 		names = names.filter (function (value, index, array) { 
 			return names.indexOf (value) == index;
-		});
-
-		names = names.sort(function(a, b) {
+		}).sort(function(a, b) {
 			return names_order.indexOf(a) - names_order.indexOf(b);
-		  });
-
+		});
 
 		for (var i = 0; i < names.length; i++){
 			matrix.push(new Array(names.length+1).join('0').split('').map(parseFloat));
@@ -969,11 +965,17 @@ data = d3.csv(file, function(d) {
 			killer = names.indexOf(list_chord[i].killer);
 			killed = names.indexOf(list_chord[i].name);
 			matrix[killer][killed] = list_chord[i].val / totalChord;
+			if (matrix[killed][killer] == 0){
+				matrix[killed][killer] = 0.00000000000000000000000000001;
+				var order = names_order.indexOf(list_chord[i].name);
+				allegiances_chord[order] = list_chord[i].info[0].allegiance;
+			}
 			var order = names_order.indexOf(list_chord[i].killer);
 			allegiances_chord[order] = list_chord[i].info[0].killershouse;
 		}
 		return matrix;
 	}
+
 	matrix = createGroupsChord(null);
 		
 	var width3="700", height3="700";
