@@ -628,25 +628,27 @@ data = d3.csv(file, function(d) {
 		if(currentLabel == 'Deaths'){
 		if(selectedGroup == 'Character' && totalByEpisode.find(d => d.val != 0) != undefined){
 			var ebdRect = totalByEpisode.find(d => d.val != 0)
-			ebdSeason = ebdRect.info[0].estimatedBookDeathSeason;
-			ebdEpisode = ebdRect.info[0].estimatedBookDeathEpisode;
-			if (ebdSeason > -1 && ebdEpisode > -1){
-				svg.append("rect")
-					.data([{ebds: ebdSeason, ebde: ebdEpisode}])
-					.attr("class", "ebd")
-					.attr("x", x(ebdEpisode))
-					.attr("y", y(ebdSeason))
-					.attr("rx", 4)
-					.attr("ry", 4)
-					.attr("width", x.bandwidth() )
-					.attr("height", y.bandwidth() )
-					.style("fill", "none")
-					.style("stroke-width", 7)
-					.style("stroke", "red")
-					.style("opacity", 0.8)
-					.on("mouseover",mouseover) //depois do transition é preciso chamar  outra vez
-					.on("mousemove", mousemove)
-					.on("mouseleave", mouseleave)
+			if (ebdRect.info[0] != undefined){
+				ebdSeason = ebdRect.info[0].estimatedBookDeathSeason;
+				ebdEpisode = ebdRect.info[0].estimatedBookDeathEpisode;
+				if (ebdSeason > -1 && ebdEpisode > -1){
+					svg.append("rect")
+						.data([{ebds: ebdSeason, ebde: ebdEpisode}])
+						.attr("class", "ebd")
+						.attr("x", x(ebdEpisode))
+						.attr("y", y(ebdSeason))
+						.attr("rx", 4)
+						.attr("ry", 4)
+						.attr("width", x.bandwidth() )
+						.attr("height", y.bandwidth() )
+						.style("fill", "none")
+						.style("stroke-width", 7)
+						.style("stroke", "red")
+						.style("opacity", 0.8)
+						.on("mouseover",mouseover) //depois do transition é preciso chamar  outra vez
+						.on("mousemove", mousemove)
+						.on("mouseleave", mouseleave)
+			}
 			}
 		}
 	}
