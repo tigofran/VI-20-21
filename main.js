@@ -73,15 +73,12 @@ data = d3.csv(file, function(d) {
 		var killershouseValues = Array.from([...new Set([...houseKillsData,...houseDeathsData])]).sort();
 		var methodData = d3.map(data, function(d){return d.method;})
 		var methodValues = Array.from([...new Set(methodData)]).sort();
-		var genderValues = ['Female', 'Male'];
+		var genderValues = ['Female', 'Male','Unknown'];
 		var nobilityValues = ['Noble','Peasant'];
 		var animalDeathData = d3.map(data.filter(function(d) {return d.isAnimal == 1}), function(d){return d.character;})
 		var animalKillData = d3.map(data.filter(function(d) {return d.killerIsAnimal == 1}), function(d){return d.killer;})
 		var animalValues = Array.from([...new Set(['All Animals',...animalDeathData,...animalKillData])]).sort();
-		var locationCounts = d3.map(data,function(d){return d.location})
-		locationCounts = rollupDict(locationCounts)
-		console.log(locationCounts)
-
+		var locationCounts = rollupDict(d3.map(data,function(d){return d.location}))
 
 		var secondDropdown = d3.select('#secondSelectButton')
 		.style('visibility','hidden');
@@ -362,6 +359,7 @@ data = d3.csv(file, function(d) {
 		var clickedEpisode;
 		var clickedMethod;
 		var clickedBook;
+		var clickedLocation;
 		var previousRectSeason;
 		var previousRectEpisode;
 		var selectedRectSeason;
@@ -393,6 +391,7 @@ data = d3.csv(file, function(d) {
 					clickedMethod = undefined;
 					clickedHouse = undefined;
 					clickedBook = undefined;
+					clickedLocation = undefined;
 				}
 			updateHeatmap();
 			updateTreemap();
@@ -422,6 +421,7 @@ data = d3.csv(file, function(d) {
 					clickedMethod = clickedRect.__data__.data.Method;
 					clickedHouse = undefined;
 					clickedBook = undefined;
+					clickedLocation = undefined;
 				}
 			updateHeatmap();
 			updateTreemap();
@@ -458,6 +458,7 @@ data = d3.csv(file, function(d) {
 					clickedHouse = allegiances_chord[clickedRect.__data__.index];
 					selectedCharacter = names[clickedRect.__data__.index];
 					clickedBook = undefined;
+					clickedLocation = undefined;
 				}
 			//console.log(clickedHouse)
 			updateHeatmap();
@@ -485,6 +486,37 @@ data = d3.csv(file, function(d) {
 					clickedMethod = undefined;
 					clickedHouse = undefined;
 					clickedBook = clickedRect.__data__.book.toLowerCase();
+					clickedLocation = undefined;
+				}
+			updateHeatmap();
+			updateTreemap();
+			updateBarchart();
+			// updateChord();
+			fadeAll(1);
+			updateMap();
+			}
+		}
+
+		var previousRectLocation, selectedRectLocation;
+		function rectClick5(d){
+			if (d.target.__data__ != undefined){
+			clickedRect = d.target;
+			if (previousRectLocation != selectedRectLocation)
+				previousRectLocation = selectedRectLocation;
+			else				
+				previousRectLocation = undefined;
+			selectedRectLocation = clickedRect.__data__.location;
+			if (previousRectLocation == selectedRectLocation){
+					clickedRect = undefined;
+					clickFilter = undefined;
+					clickedLocation = undefined;
+				}else{
+					clickedEpisode = undefined;
+					clickedSeason = undefined;
+					clickedMethod = undefined;
+					clickedHouse = undefined;
+					clickedBook = undefined;
+					clickedLocation = clickedRect.__data__.location;
 				}
 			updateHeatmap();
 			updateTreemap();
@@ -559,6 +591,8 @@ data = d3.csv(file, function(d) {
 				else if (clickedBook != undefined){
 					return d[clickedBook] == 1;
 				}
+				else if (clickedLocation != undefined)
+					return d.location == clickedLocation;
 			}
 		}
 
@@ -585,8 +619,8 @@ data = d3.csv(file, function(d) {
 					break;
 				case 'Gender':
 					if (currentLabel == 'Deaths')
-						return selectedSecond == 'Female' ? d.gender == 0 : d.gender == 1;
-					return selectedSecond == 'Female' ? d.killerGender == 0 : d.killerGender == 1;
+						return selectedSecond == 'Female' ? d.gender == 0 : (selectedSecond == 'Male' ? d.gender == 1 : d.gender == -1);
+					return selectedSecond == 'Female' ? d.killerGender == 0 : (selectedSecond == 'Male' ? d.killerGender == 1 : d.killerGender == -1);
 					break;
 				case 'Nobility':
 					if (currentLabel == 'Deaths')
@@ -812,7 +846,6 @@ data = d3.csv(file, function(d) {
 		function createTreemap(){
 			methodTreeData = [];
 			var dataTree = createFilterTree(clickFilter,menuFilter);
-			//console.log(dataTree)
 			d3.map(dataTree, function(d) { 
 				methodTreeData.push(d.method);})
 
@@ -829,7 +862,6 @@ data = d3.csv(file, function(d) {
 	
 			objs.sort(function(a, b) { return b[1] - a[1]; });
 			objs = objs.slice(0,6);
-			//console.log(objs);
 		
 			//generate tree structure
 			var listTree = [];
@@ -845,7 +877,6 @@ data = d3.csv(file, function(d) {
 				obj["value"] = objs[i][1];
 				listTree.push(obj);
 			}
-			//console.log(listTree);
 
 			var root = d3.stratify()
 						.id(function(d) { return d.Method; })
@@ -859,10 +890,8 @@ data = d3.csv(file, function(d) {
 			.size([width, height])
 			.padding(4)
 			(root)
-			//console.log(root.leaves())
 			rootLeaves = root.leaves();
 
-			//console.log(rootLeaves)
 			return rootLeaves;
 		}
 
@@ -912,7 +941,6 @@ data = d3.csv(file, function(d) {
 			}
 
 			var root = createTreemap();
-			//console.log(root.leaves())
 
 			squares2 = svg2.selectAll("rect")
 				.data(rootLeaves)
@@ -970,7 +998,6 @@ data = d3.csv(file, function(d) {
 			else{
 				epGroups = d3.group(data.filter(fil).filter(fil2), d => d.killer_chord, d => d.killed_chord)
 			}
-			//console.log(epGroups)
 			epGroups.forEach( function (vals, key) {
 				summary_vals = vals.forEach( function (val2, key2) {
 					currentKiller = key;
@@ -1002,7 +1029,6 @@ data = d3.csv(file, function(d) {
 			}
 			
 			for (var i = 0; i < list_chord.length; i++){
-				//console.log(list_chord[i])
 				killer = names.indexOf(list_chord[i].killer);
 				killed = names.indexOf(list_chord[i].name);
 				matrix[killer][killed] = list_chord[i].val / totalChord;
@@ -1434,10 +1460,12 @@ data = d3.csv(file, function(d) {
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-			var map = d3.select("#map").style('border','1px solid black')
+			var map = d3.select("#map")
 			map.node().append(datamap.documentElement)
 			var mapwidth = map.node().getBoundingClientRect().width;
 			var mapheight = map.node().getBoundingClientRect().height;
+			console.log(mapwidth)
+			console.log(mapheight)
 			var zoom = d3.zoom()
 			map.call(zoom
 				.scaleExtent([1, 100])
@@ -1447,10 +1475,10 @@ data = d3.csv(file, function(d) {
 				}));
 
 			
-			var svgMap = d3.select('#gotmap')
-			.on('click',function(d){console.log (d3.pointer(d))})
+			var svgMap = d3.select('#gotmap');
 
-			var pinSize = 2.8;
+
+			var pinSize = 3.5;
 			function createMap(){
 				svgMap
 				.selectAll()
@@ -1460,22 +1488,22 @@ data = d3.csv(file, function(d) {
 				.attr('id','AAAAA')
 				.attr("x", function(d) { return scramblePins(d.locationx - pinSize/2,d.location); }) //trocar isto por scramble
 				.attr("y", function(d) { return scramblePins(d.locationy - pinSize/2,d.location); }) //trocar isto por scramble
-				.attr("rx", 100)
-				.attr("ry", 100)
+				.attr("rx", function(d) { return (d.nobility == '1' ? 0 : 100)})
+				.attr("ry", function(d) { return (d.nobility == '1' ? 0 : 100)})
 				.attr('width',pinSize)
 				.attr('height', pinSize)
-				.style("fill", function(d){ return myColor(d.character.length * 5)})
-				.style('opacity',1)
+				.style("fill", function(d){ return d.gender == '0' ? '#ff00c8' : (d.gender == '1' ? '#0026ff' : '#4a494a');})
+				.style('opacity',0.8)
 				.on("mouseover",mouseover5)
 				.on("mousemove", mousemove5)
 				.on("mouseleave", mouseleave5)
-				.on('click', function(d){console.log(d.target.__data__);})
+				.on('click',rectClick5)
 			}
 
 			createMap();
 
 			function mouseover5(d){
-				if (d.srcElement.style.opacity == 1) {
+				if (d.srcElement.style.opacity == 0.8) {
 					tooltip
 						.style("visibility", 'visible')
 					d3.select(this)
@@ -1485,7 +1513,7 @@ data = d3.csv(file, function(d) {
 				}
 	
 			function mousemove5(d){
-				if (d.srcElement.style.opacity == 1){
+				if (d.srcElement.style.opacity == 0.8){
 					tooltip.html("Killed: " + d.target.__data__.character + '<br>' +
 					"Killer: " + d.target.__data__.killer + '<br>' + 
 					"Location: " + d.target.__data__.location + '<br>' +
@@ -1501,7 +1529,7 @@ data = d3.csv(file, function(d) {
 				}
 	
 			function mouseleave5(d){
-				if (d.srcElement.style.opacity == 1) {
+				if (d.srcElement.style.opacity == 0.8) {
 					tooltip
 						.style("visibility", 'hidden')
 					d3.select(this)
@@ -1520,13 +1548,43 @@ data = d3.csv(file, function(d) {
 				pins = svgMap.selectAll("#AAAAA")
 				pins.transition()
 				.duration(750)
-				.attr('width',function(d){return (mapFilter.includes(d)) ? pinSize : '0'})
-				.attr('height',function(d){return (mapFilter.includes(d)) ? pinSize : '0'})
-				//.style('opacity', function(d){return (mapFilter.includes(d)) ? '1' : '0'})
+						.attr('width',function(d){
+							if (!mapFilter.includes(d))
+								return 0;
+							if (mapFilter.length < 3)
+								return pinSize * 5.5;	
+							if (mapFilter.length < 10)
+								return pinSize * 4.75;	
+							if (mapFilter.length < 85)
+								return pinSize * 3.5;
+							else if (mapFilter.length < 150)
+								return pinSize * 2.25;
+							else if (mapFilter.length < 600)
+								return pinSize * 1.75;
+							else 
+								return pinSize;
+						})
+						.attr('height',function(d){
+							if (!mapFilter.includes(d))
+								return 0;
+							if (mapFilter.length < 3)
+								return pinSize * 5.5;	
+							if (mapFilter.length < 10)
+								return pinSize * 4.75;	
+							if (mapFilter.length < 85)
+								return pinSize * 3.5;
+							else if (mapFilter.length < 150)
+								return pinSize * 2.25;
+							else if (mapFilter.length < 600)
+								return pinSize * 1.75;
+							else 
+								return pinSize;
+						})
+				.style('opacity', function(d){return (mapFilter.includes(d)) ? '0.8' : '0'})
 				pins.on("mouseover",mouseover5)
 					.on("mousemove", mousemove5)
 					.on("mouseleave", mouseleave5)
-					.on('click', function(d){console.log(d.target.__data__);})
+					.on('click',rectClick5)
 				}
 
 
@@ -1546,9 +1604,9 @@ data = d3.csv(file, function(d) {
 				else if (locationCounts[location] <= 70)
 					return coordinate + randomInteger(-40,40);
 				else if (locationCounts[location] <= 210)
-					return coordinate + randomInteger(-50,50);
+					return coordinate + randomInteger(-60,60);
 				else
-				return coordinate + randomInteger(-70,70);
+				return coordinate + randomInteger(-72,72);
 			}
 
 
