@@ -9,6 +9,7 @@
   }
   body{
     font-family: 'Roboto', sans-serif;
+    font-size: 15px;
   }
 
   .dropdown-submenu {
@@ -42,7 +43,7 @@
 .switch-field label {
 	background-color: #e4e4e4;
 	color: rgba(0, 0, 0, 0.6);
-	font-size: 14px;
+	font-size: 15px;
 	line-height: 1;
 	text-align: center;
 	padding: 8px 16px;
@@ -124,39 +125,14 @@ path.chord {
       <input type="radio" id="radiokills" name="switch-one" value="0"/>
       <label for="radiokills" id="radiokillslabel">Kills</label>
     </div>
+  </form>
+
+  <div id="filters" style="max-height: 30px; position: fixed; top: 5px; bottom:0px; left: 1100px; right: 0px;"></div>
 
 <script src="https://d3js.org/d3.v6.js"></script>
 <!-- Load color palettes -->
 <script src="https://d3js.org/d3-scale-chromatic.v2.min.js"></script>
 <script src='main.js'></script>
-
-<!-- <div class="dropdown">
-  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id= "selectButton">
-  <span class="caret"></span></button>
-  <ul id ="menu" class="dropdown-menu">
-    <li><a id= "value" tabindex="-1" href="#"></a></li>
-    <li class="dropdown-submenu">
-      <a class="test" tabindex="-1" href="#">New dropdown <span class="caret"></span></a>
-      <ul class="dropdown-menu">
-        <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
-        <li><a tabindex="-1" href="#">2nd level dropdown</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
-</div>
-
-<script>
-  $(document).ready(function(){
-    $('.dropdown-submenu a.test').on("click", function(e){
-      $(this).next('ul').toggle();
-      e.stopPropagation();
-      e.preventDefault();
-    });
-  });
-  </script> -->
 
 
 </body>

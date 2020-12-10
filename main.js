@@ -47,12 +47,12 @@ data = d3.csv(file, function(d) {
 		var filterGroups = ['No Filter','Season','Books','Character','House', 'Killing Method',
 							'Gender','Nobility','Animals']
 		var totalByEpisode = [];
-		var allDeaths = [];
 		var selectedGroup;
 		var selectedSecond;
 		var min;
 		var max;
 		var maxBook;
+		var filterInfo = [];
 		// add the options to the button
 		var dropdown = d3.select("#selectButton")
 		.selectAll()
@@ -88,21 +88,20 @@ data = d3.csv(file, function(d) {
 		var radiodeaths = d3.select("#radiodeaths").on("change", function(d){
 			currentLabel = "Deaths";
 			if (selectedGroup != undefined && selectedSecond == undefined) return;
-			updateHeatmap();
-			updateTreemap();
-			// updateChord();
-			updateBarchart();
-			updateMap();
+			updateAll();
 		})
 		var radiokills = d3.select("#radiokills").on("change", function(d){
 			currentLabel = "Kills";
 			if (selectedGroup != undefined && selectedSecond == undefined) return;
-			updateHeatmap();
-			updateTreemap();
-			// updateChord();
-			updateBarchart();
-			updateMap();
+			updateAll();
 		})
+
+		var filters = d3.select('#filters')
+			.text("Current filters: ")
+			filters.append('div') 
+			.attr('id','clickfilter')
+			filters.append('div')
+			.attr('id','menufilter')
 
 		function createGroupsHeatmap(fil1,fil2){
 			totalByEpisode = [];
@@ -214,7 +213,6 @@ data = d3.csv(file, function(d) {
 		createGroupsMap(null);
 
 		d3.select("#selectButton").on("change", function(d) {
-			secondDropdown.selectAll('*').remove()
 			selectedGroup = d3.select(this).property("value"); //value of first dropdown
 			if (selectedGroup == 'No Filter'){
 				selectedGroup = undefined;
@@ -224,27 +222,114 @@ data = d3.csv(file, function(d) {
 				return (selectedGroup != undefined) ? 'visible' : 'hidden';}); //hide second menu in case of NoFilter
 			if(selectedGroup != undefined){
 				updateSecondDropdown(); //yupdate values on second dropdown menu
-				//updateHeatmap acontece no segundo dropdown
 				selectedSecond = undefined;
 			}
 			else{
-				updateHeatmap(); //caso a opcao seja No Filter
-				updateTreemap();
-				// updateChord();
-				updateBarchart();
-				updateMap();
+				updateAll();
 				selectedSecond = undefined;
 			}
 		})
 		
 		d3.select("#secondSelectButton").on("change", function(d) {
 			selectedSecond = d3.select(this).property("value");
+			updateAll();
+		})
+
+		function updateFilterList(){
+			var cf = d3.select('#clickfilter')
+			var mf = d3.select('#menufilter')
+			if (clickedRect == undefined){
+				filterInfo[0] = undefined;
+				filterInfo[1] = undefined;
+				filterInfo[4] = undefined;
+				filterInfo[5] = undefined;
+			}
+			if (selectedGroup == undefined){
+				filterInfo[2] = undefined;
+				filterInfo[3] = undefined;
+			}
+			if (filterInfo[0] != undefined){
+				cf.text(filterInfo[0] + ': ' + filterInfo[1])
+				if (filterInfo[0] == 'Season')
+					cf.text(filterInfo[0] + ': ' + filterInfo[1] + ' | ' + filterInfo[4] + ': ' + filterInfo[5])
+				cf.append('img')
+					.attr('id','clickfiltercross')
+					.attr('src','images/cross.png')
+					.attr('width',15)
+					.attr('height',15)
+					.style('margin-left', '5px')
+			}
+			else{
+				cf.text('')
+			}
+			if (filterInfo[2] != undefined){
+				mf.text(filterInfo[2] + ': ' + filterInfo[3])
+				mf.append('img')
+				.attr('id','menufiltercross')
+				.attr('src','images/cross.png')
+				.attr('width',15)
+				.attr('height',15)
+				.style('margin-left', '5px')
+			}
+			else{
+				mf.text('')
+			}
+
+			var clickcross = cf.select('img')
+				.on("click",deleteFilter)
+
+			var menucross = mf.select('img')
+				.on("click",deleteFilter)
+
+			function deleteFilter(d){
+				if (d.target.id == 'clickfiltercross'){ //clicked cross for the click filter
+					clickedRect = undefined;
+					clickedSeason = undefined;
+					clickedEpisode = undefined;
+					clickedMethod = undefined;
+					clickedHouse = undefined;
+					clickedBook = undefined;
+					clickedLocation = undefined;
+					selectedRectSeason = undefined;
+					selectedRectEpisode = undefined;
+					selectedRectMethod = undefined;
+					selectedRectHouse = undefined;
+					selectedRectBook = undefined;
+					selectedRectLocation = undefined;
+					updateAll();
+				}
+				else{ //clicked cross for the menu filter
+					d3.select('#selectButton').property('value', 'No Filter');
+					selectedGroup = d3.select(this).property("value"); //value of first dropdown
+					if (selectedGroup == 'No Filter'){
+						selectedGroup = undefined;
+						menuFilter = undefined;
+					}
+					d3.select('#secondSelectButton').style('visibility',function(d) {
+						return (selectedGroup != undefined) ? 'visible' : 'hidden';}); //hide second menu in case of NoFilter
+					if(selectedGroup != undefined){
+						updateSecondDropdown(); //yupdate values on second dropdown menu
+						selectedSecond = undefined;
+					}
+					else{
+						updateAll();
+						selectedSecond = undefined;
+					}
+				}
+			}
+		}
+
+		function updateAll(){
 			updateHeatmap();
 			updateTreemap();
 			// updateChord();
 			updateBarchart();
 			updateMap();
-		})
+			updateFilterList();
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// set the dimensions and margins of the graph
 		var margin = {top: 80, right: 0, bottom: 50, left: 80},
@@ -287,15 +372,6 @@ data = d3.csv(file, function(d) {
 			if (max == 0) max = 1;
 		}
 
-		function setColorDomainMap(array){
-			var sizes = [];
-			var iterator = array.values();
-			for (let ind of iterator)
-				sizes.push(ind.val)
-			min = (Math.min.apply(Math, sizes) != 0) ? Math.min.apply(Math, sizes) : 1
-			max = (Math.max.apply(Math, sizes) != 0) ? Math.max.apply(Math, sizes) : 1
-		}
-
 		setColorDomain(totalByEpisode); //first time: set colorscale to all episodes
 
 		var myColor = d3.scaleSequentialLog()
@@ -332,7 +408,7 @@ data = d3.csv(file, function(d) {
 				.style('visibility','hidden')
 			d3.select(this)
 				.style("stroke", "none")
-				.style("opacity", 0.8)
+				.style("opacity", 0.9)
 			}
 		}
 		function mouseleave(d){
@@ -342,7 +418,7 @@ data = d3.csv(file, function(d) {
 				.style('visibility','hidden')
 			d3.select(this)
 				.style("stroke", "red")
-				.style("opacity", 0.8)
+				.style("opacity", 0.9)
 			}
 			else{
 			tooltip
@@ -351,7 +427,7 @@ data = d3.csv(file, function(d) {
 				.style("stroke", function(d){
 					return (strokecolor == 'green') ? 'green' : 'none';
 				})
-				.style("opacity", 0.8)
+				.style("opacity", 0.9)
 			}
 		}
 
@@ -380,6 +456,10 @@ data = d3.csv(file, function(d) {
 				}
 				selectedRectSeason = clickedRect.__data__.season;
 				selectedRectEpisode = clickedRect.__data__.episode;
+				selectedRectMethod = undefined;
+				selectedRectHouse = undefined;
+				selectedRectBook = undefined;
+				selectedRectLocation = undefined;
 				if (previousRectSeason == selectedRectSeason && previousRectEpisode == selectedRectEpisode){
 					clickedRect = undefined;
 					clickFilter = undefined;
@@ -393,12 +473,8 @@ data = d3.csv(file, function(d) {
 					clickedBook = undefined;
 					clickedLocation = undefined;
 				}
-			updateHeatmap();
-			updateTreemap();
-			// updateChord();
-			fadeAll(1);
-			updateBarchart();
-			updateMap();
+				updateAll();
+				fadeAll(1);
 			}
 		}
 
@@ -411,6 +487,11 @@ data = d3.csv(file, function(d) {
 				else
 					previousRectMethod = undefined;
 				selectedRectMethod = clickedRect.__data__.data.Method;
+				selectedRectSeason = undefined;
+				selectedRectEpisode = undefined;
+				selectedRectHouse = undefined;
+				selectedRectBook = undefined;
+				selectedRectLocation = undefined;
 				if (previousRectMethod == selectedRectMethod){
 					clickedRect = undefined;
 					clickFilter = undefined;
@@ -423,12 +504,8 @@ data = d3.csv(file, function(d) {
 					clickedBook = undefined;
 					clickedLocation = undefined;
 				}
-			updateHeatmap();
-			updateTreemap();
-			// updateChord();
-			updateBarchart();
-			fadeAll(1);
-			updateMap();
+				updateAll();
+				fadeAll(1);
 			}
 		}
 		
@@ -441,6 +518,11 @@ data = d3.csv(file, function(d) {
 				else				
 					previousRectHouse = undefined;
 				selectedRectHouse = allegiances_chord[clickedRect.__data__.index];
+				selectedRectSeason = undefined;
+				selectedRectEpisode = undefined;
+				selectedRectMethod = undefined;
+				selectedRectBook = undefined;
+				selectedRectLocation = undefined;
 				if (previousRectHouse == selectedRectHouse){
 					if (names[clickedRect.__data__.index] != selectedCharacter){
 						previousRectHouse = selectedRectHouse;
@@ -460,11 +542,8 @@ data = d3.csv(file, function(d) {
 					clickedBook = undefined;
 					clickedLocation = undefined;
 				}
-			//console.log(clickedHouse)
-			updateHeatmap();
-			updateTreemap();
-			updateBarchart();
-			updateMap();
+				updateAll();
+				fadeAll(1);
 			}		
 		}
 		var previousRectBook, selectedRectBook;
@@ -476,6 +555,11 @@ data = d3.csv(file, function(d) {
 			else				
 				previousRectBook = undefined;
 			selectedRectBook = clickedRect.__data__.book;
+			selectedRectSeason = undefined;
+			selectedRectEpisode = undefined;
+			selectedRectMethod = undefined;
+			selectedRectHouse = undefined;
+			selectedRectLocation = undefined;
 			if (previousRectBook == selectedRectBook){
 					clickedRect = undefined;
 					clickFilter = undefined;
@@ -488,12 +572,8 @@ data = d3.csv(file, function(d) {
 					clickedBook = clickedRect.__data__.book.toLowerCase();
 					clickedLocation = undefined;
 				}
-			updateHeatmap();
-			updateTreemap();
-			updateBarchart();
-			// updateChord();
-			fadeAll(1);
-			updateMap();
+				updateAll();
+				fadeAll(1);
 			}
 		}
 
@@ -506,6 +586,11 @@ data = d3.csv(file, function(d) {
 			else				
 				previousRectLocation = undefined;
 			selectedRectLocation = clickedRect.__data__.location;
+			selectedRectSeason = undefined;
+			selectedRectEpisode = undefined;
+			selectedRectMethod = undefined;
+			selectedRectHouse = undefined;
+			selectedRectBook = undefined;
 			if (previousRectLocation == selectedRectLocation){
 					clickedRect = undefined;
 					clickFilter = undefined;
@@ -518,12 +603,8 @@ data = d3.csv(file, function(d) {
 					clickedBook = undefined;
 					clickedLocation = clickedRect.__data__.location;
 				}
-			updateHeatmap();
-			updateTreemap();
-			updateBarchart();
-			// updateChord();
-			fadeAll(1);
-			updateMap();
+				updateAll();
+				fadeAll(1);
 			}
 		}
 
@@ -546,7 +627,7 @@ data = d3.csv(file, function(d) {
 				else return myColor(d.val)} )
 			.style("stroke-width", 4)
 			.style("stroke", "none")
-			.style("opacity", 0.8)
+			.style("opacity", 0.9)
 			.on("mouseover",mouseover)
 			.on("mousemove", mousemove)
 			.on("mouseleave", mouseleave)
@@ -579,65 +660,140 @@ data = d3.csv(file, function(d) {
 
 		function filterClick(d){
 			if (clickedRect != undefined){
-				if (clickedSeason != undefined)
+				if (clickedSeason != undefined){
+					filterInfo[0] = 'Season';
+					filterInfo[1] = clickedSeason;
+					filterInfo[4] = 'Episode';
+					filterInfo[5] = clickedEpisode;
 					return d.season == clickedSeason && d.episode == clickedEpisode;
-				else if (clickedMethod != undefined)
+				}
+				else if (clickedMethod != undefined){
+					filterInfo[0] = 'Method';
+					filterInfo[1] = clickedMethod;
 					return d.method == clickedMethod;
+				}
 				else if (clickedHouse != undefined){
-					if(currentLabel == 'Deaths')
+					if(currentLabel == 'Deaths'){
+						filterInfo[0] = 'House';
+						filterInfo[1] = clickedHouse;
 						return d.allegiance == clickedHouse;
+					}
+					else{
+					filterInfo[0] = 'Killers House';
+					filterInfo[1] = clickedHouse;
 					return d.killershouse == clickedHouse;
+					}
 				}
 				else if (clickedBook != undefined){
+					filterInfo[0] = 'Book';
+					if (clickedBook == 'got')
+						filterInfo[1] = 'A Game of Thrones';
+					else if (clickedBook == 'cok')
+						filterInfo[1] = 'A Clash of Kings';
+					else if (clickedBook == 'sos')
+						filterInfo[1] = 'A Storm of Swords';
+					else if (clickedBook == 'ffc')
+						filterInfo[1] = 'A Feast for Crows';
+					else
+						filterInfo[1] = 'A Dance with Dragons';
 					return d[clickedBook] == 1;
 				}
-				else if (clickedLocation != undefined)
+				else if (clickedLocation != undefined){
+					filterInfo[0] = 'Location';
+					filterInfo[1] = clickedLocation;
 					return d.location == clickedLocation;
+				}
 			}
 		}
 
 		function filterData(d){
 			switch(selectedGroup){
 				case undefined:
-					return null;
+					return undefined;
 					break;
 				case 'Character':
-					if (currentLabel == 'Deaths')
+					if (currentLabel == 'Deaths'){
+						filterInfo[2] = 'Character';
+						filterInfo[3] = selectedSecond;
 						return d.character == selectedSecond;
-					return d.killer == selectedSecond;
+					}
+					else{
+						filterInfo[2] = 'Killer';
+						filterInfo[3] = selectedSecond;
+						return d.killer == selectedSecond;
+					}
 					break;
 				case 'Books':
-					return d[selectedSecond.toLowerCase()] == 1;
+						filterInfo[2] = 'Book';
+						if (selectedSecond == 'GoT')
+						filterInfo[3] = 'A Game of Thrones';
+					else if (selectedSecond == 'CoK')
+						filterInfo[3] = 'A Clash of Kings';
+					else if (selectedSecond == 'SoS')
+						filterInfo[3] = 'A Storm of Swords';
+					else if (selectedSecond == 'FfC')
+						filterInfo[3] = 'A Feast for Crows';
+					else
+						filterInfo[3] = 'A Dance with Dragons';
+						return d[selectedSecond.toLowerCase()] == 1;
 					break;
 				case 'House':
-					if (currentLabel == "Deaths")
+					if (currentLabel == "Deaths"){
+						filterInfo[2] = 'House';
+						filterInfo[3] = selectedSecond;
 						return d.allegiance == selectedSecond;
-					return d.killershouse == selectedSecond;
+					}
+					else{
+						filterInfo[2] = 'Killers House';
+						filterInfo[3] = selectedSecond;
+						return d.killershouse == selectedSecond;
+					}
 					break;
 				case 'Killing Method':
+					filterInfo[2] = 'Method';
+					filterInfo[3] = selectedSecond;
 					return d.method == selectedSecond;
 					break;
 				case 'Gender':
-					if (currentLabel == 'Deaths')
+					if (currentLabel == 'Deaths'){
+						filterInfo[2] = 'Gender';
+						filterInfo[3] = selectedSecond;
 						return selectedSecond == 'Female' ? d.gender == 0 : (selectedSecond == 'Male' ? d.gender == 1 : d.gender == -1);
-					return selectedSecond == 'Female' ? d.killerGender == 0 : (selectedSecond == 'Male' ? d.killerGender == 1 : d.killerGender == -1);
+					}
+					else{
+						filterInfo[2] = 'Killers Gender';
+						filterInfo[3] = selectedSecond;
+						return selectedSecond == 'Female' ? d.killerGender == 0 : (selectedSecond == 'Male' ? d.killerGender == 1 : d.killerGender == -1);
+					}
 					break;
 				case 'Nobility':
-					if (currentLabel == 'Deaths')
+					if (currentLabel == 'Deaths'){
+						filterInfo[2] = 'Nobility';
+						filterInfo[3] = selectedSecond;
 						return selectedSecond == 'Peasant' ? d.nobility == 0 : d.nobility == 1;
-					return selectedSecond == 'Peasant' ? d.killerNobility == 0 : d.killerNobility == 1;
+					}
+					else{
+						filterInfo[2] = 'Killers Nobility';
+						filterInfo[3] = selectedSecond;
+						return selectedSecond == 'Peasant' ? d.killerNobility == 0 : d.killerNobility == 1;
+					}
 					break;
 				case 'Animals':
-					if (selectedSecond == 'All Animals')
+					filterInfo[2] = 'Animal';
+					filterInfo[3] = selectedSecond;
+					if (selectedSecond == 'All Animals'){
 						if (currentLabel == 'Deaths')
 							return d.allegiance == 'Animal';
 						else
 							return d.killershouse == 'Animal';
+					}
 					if (currentLabel == 'Deaths')
 						return d.character == selectedSecond;
 					return d.killer == selectedSecond;
 					break;
 				default:
+					filterInfo[2] = selectedGroup;
+					filterInfo[3] = selectedSecond;
 					return d[selectedGroup.toLowerCase()] == selectedSecond;
 					break;
 			}
@@ -648,12 +804,9 @@ data = d3.csv(file, function(d) {
 		var squares = svg.selectAll("rect");
 		// A function that update the chart
 		function updateHeatmap() {
-			if (clickedRect != undefined){
+			if (clickedRect != undefined)
 				clickFilter = function(d){return filterClick(d);}
-			}
-			if (selectedGroup != undefined){
-				menuFilter = function(d){return filterData(d);}
-			}
+			menuFilter = function(d){return filterData(d);}
 			var dataFilter = createGroupsHeatmap(clickFilter,menuFilter);
 			squares = svg.selectAll("rect")
 				.data(dataFilter)
@@ -667,13 +820,12 @@ data = d3.csv(file, function(d) {
 				.attr("x", function(d) { return x(d.episode) })
 				.attr("y", function(d) { return y(d.season) })
 				.style("fill", function(d) {
-					setColorDomain(totalByEpisode);	
 					if (d.val == undefined) return "#888888";
 					if (d.val == 0) return "#ffffff";
 					else return myColor(d.val);} )
 			squares.style("stroke-width", 4) //chama-se squares outra vez por causa do stroke
 				.style("stroke", "none")
-				.style("opacity", 0.8)
+				.style("opacity", 0.9)
 			squares.on("mouseover",mouseover) //depois do transition é preciso chamar squares outra vez
 			squares.on("mousemove", mousemove)
 			squares.on("mouseleave", mouseleave)
@@ -702,7 +854,7 @@ data = d3.csv(file, function(d) {
 							.style("fill", "none")
 							.style("stroke-width", 7)
 							.style("stroke", "red")
-							.style("opacity", 0.8)
+							.style("opacity", 0.9)
 							.on("mouseover",mouseover) //depois do transition é preciso chamar  outra vez
 							.on("mousemove", mousemove)
 							.on("mouseleave", mouseleave)
@@ -850,7 +1002,6 @@ data = d3.csv(file, function(d) {
 				methodTreeData.push(d.method);})
 
 			var result = rollup(methodTreeData);
-
 			var objs = [];
 			var elem = [];
 			for (var i=0; i<result[0].length; i++){
@@ -1390,7 +1541,6 @@ data = d3.csv(file, function(d) {
 			.style('opacity',0.9)
 			.attr("height", function(d) { return heightBar - yBar(d.val); })
 			.style("fill", function(d) {
-				setColorDomainMap(totalByBook);
 				if (d.val == undefined) return "#888888";
 				if (d.val == 0) return "#ffffff";
 				else return myColor(d.val)} )
@@ -1451,7 +1601,6 @@ data = d3.csv(file, function(d) {
 					if (d.val == undefined) return "#888888";
 					if (d.val == 0) return "#ffffff";
 					else return myColor(d.val);} )
-			bars.style("opacity", 0.8)
 			bars.on("mouseover",mouseover4) //depois do transition é preciso chamar bars outra vez
 			bars.on("mousemove", mousemove4)
 			bars.on("mouseleave", mouseleave4)
@@ -1464,8 +1613,6 @@ data = d3.csv(file, function(d) {
 			map.node().append(datamap.documentElement)
 			var mapwidth = map.node().getBoundingClientRect().width;
 			var mapheight = map.node().getBoundingClientRect().height;
-			console.log(mapwidth)
-			console.log(mapheight)
 			var zoom = d3.zoom()
 			map.call(zoom
 				.scaleExtent([1, 100])
@@ -1608,8 +1755,6 @@ data = d3.csv(file, function(d) {
 				else
 				return coordinate + randomInteger(-72,72);
 			}
-
-
 
 		});
 	});
