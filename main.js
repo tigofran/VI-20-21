@@ -1615,7 +1615,7 @@ data = d3.csv(file, function(d) {
 			var mapheight = map.node().getBoundingClientRect().height;
 			var zoom = d3.zoom()
 			map.call(zoom
-				.scaleExtent([1, 100])
+				.scaleExtent([1, 20])
 				.translateExtent([[-mapwidth/2.5,-mapheight/2.5], [mapwidth, mapheight]])
 				.on("zoom", function(event) {
 					d3.select('#gotmap').attr('transform',event.transform); //control zoom
