@@ -65,8 +65,8 @@ data = d3.csv(file, function(d) {
 		var seasonValues = ['1','2','3','4','5','6','7','8'];
 		var episodeValues = ['1','2','3','4','5','6','7','8','9','10'];
 		var bookValues = ['GoT','CoK','SoS','FfC','DwD'];
-		var characterDeathData = d3.map(data.filter(function(d){ return d.isAnimal == 0;}), function(d){return d.character});
-		var characterKillData = d3.map(data.filter(function(d){ return d.killerIsAnimal == 0;}), function(d){return d.killer;})
+		var characterDeathData = d3.map(data.filter(function(d){ return d.allegiance != 'Animal';}), function(d){return d.character});
+		var characterKillData = d3.map(data.filter(function(d){ return d.killershouse != 'Animal';}), function(d){return d.killer;})
 		var characterValues = Array.from([...new Set([...characterKillData,...characterDeathData])]).sort();
 		var houseKillsData = d3.map(data, function(d){return d.killershouse;})
 		var houseDeathsData = d3.map(data, function(d){return d.allegiance;})
@@ -75,8 +75,8 @@ data = d3.csv(file, function(d) {
 		var methodValues = Array.from([...new Set(methodData)]).sort();
 		var genderValues = ['Female', 'Male','Unknown'];
 		var nobilityValues = ['Noble','Peasant'];
-		var animalDeathData = d3.map(data.filter(function(d) {return d.isAnimal == 1}), function(d){return d.character;})
-		var animalKillData = d3.map(data.filter(function(d) {return d.killerIsAnimal == 1}), function(d){return d.killer;})
+		var animalDeathData = d3.map(data.filter(function(d) {return d.allegiance == 'Animal'}), function(d){return d.character;})
+		var animalKillData = d3.map(data.filter(function(d) {return d.killershouse == 'Animal'}), function(d){return d.killer;})
 		var animalValues = Array.from([...new Set(['All Animals',...animalDeathData,...animalKillData])]).sort();
 		var locationCounts = rollupDict(d3.map(data,function(d){return d.location}))
 
