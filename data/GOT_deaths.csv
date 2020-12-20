@@ -309,7 +309,7 @@
 308,Locke,Locke,House Bolton,Other Starks,Hodor,House Stark,Hands,Beyond the Wall,4,5,-1,-1,-1,-1,0,1,1,0,0,0,0,0,0,0,349,188
 309,Night's Watch,Night's Watch mutineer,Night's Watch,Jon Snow,Jon Snow,House Stark,Sword,Beyond the Wall,4,5,-1,-1,-1,-1,0,1,1,1,0,0,0,0,0,0,349,188
 310,Night's Watch,Night's Watch brother,Night's Watch,Night's Watch,Karl Tanner,Night's Watch,Knife,Beyond the Wall,4,5,-1,-1,-1,-1,0,1,1,0,0,0,0,0,0,0,349,188
-311,Night's Watch,Karl Tanner,Night's Watch,Jon Snow,Jon Snow,House Stark,Sword,Beyond the Wall,4,5,5,4,5,3,1,0,1,1,0,0,0,1,0,1,349,188
+311,Night's Watch,Karl Tanner,Night's Watch,Jon Snow,Jon Snow,House Stark,Sword,Beyond the Wall,4,5,5,4,5,3,1,1,1,1,0,0,0,1,0,1,349,188
 312,Night's Watch,Night's Watch mutineer,Night's Watch,Grenn,Grenn,Night's Watch,Sword,Beyond the Wall,4,5,-1,-1,-1,-1,0,1,1,0,0,0,0,0,0,0,349,188
 313,Night's Watch,Rast,Night's Watch,Animals,Ghost,Animal,Teeth,Beyond the Wall,4,5,3,26,3,5,0,1,-1,-1,1,1,0,1,0,0,349,188
 314,Other Boltons,Bolton soldier,House Bolton,Yara Greyjoy,Yara Greyjoy,House Greyjoy,Axe,Dreadfort,4,6,-1,-1,-1,-1,0,1,0,1,0,0,0,0,0,0,468,411
@@ -510,7 +510,7 @@
 509,Others,Peasant,None,Arya Stark,Arya Stark,House Stark,Poison,Braavos,5,6,-1,-1,-1,-1,0,-1,0,1,0,0,0,0,0,0,798,760
 510,Night's Watch,Aemon Targaryen,Night's Watch,Night's Watch,Aemon Targaryen,Night's Watch,Old Age,Castle Black,5,7,4,35,5,7,1,1,1,1,0,1,0,1,1,0,422,233
 511,Others,Peasant,None,Ramsay Bolton,Ramsay Bolton,House Bolton,Flaying,Winterfell,5,7,-1,-1,-1,-1,0,-1,1,1,0,0,0,0,0,0,283,447
-512,Wildlings,Wildling Leader,Free Folk,Jaqen H'ghar,Jaqen H'ghar,Free Folk,Hammer,Hardhome,5,8,-1,-1,-1,-1,0,-1,1,0,0,0,0,0,0,0,504,154
+512,Wildlings,Wildling Leader,Free Folk,Tormund,Tormund,Free Folk,Hammer,Hardhome,5,8,-1,-1,-1,-1,0,-1,1,0,0,0,0,0,0,0,504,154
 513,Wildlings,Wildling,Free Folk,White Walkers,Wight,White Walkers,Axe,Hardhome,5,8,-1,-1,-1,-1,0,-1,-1,-1,0,0,0,0,0,0,504,154
 514,Wildlings,Wildling,Free Folk,White Walkers,Wight,White Walkers,Sword,Hardhome,5,8,-1,-1,-1,-1,0,-1,-1,-1,0,0,0,0,0,0,504,154
 515,Wildlings,Wildling,Free Folk,White Walkers,Wight,White Walkers,Sword,Hardhome,5,8,-1,-1,-1,-1,0,-1,-1,-1,0,0,0,0,0,0,504,154
