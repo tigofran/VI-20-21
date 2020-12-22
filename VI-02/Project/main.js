@@ -41,7 +41,7 @@ data = d3.csv(file, function(d) {
 		colors_order = d3.map(data_chord, function(d){return d.colors;})
 
 		
-		d3.xml('/images/gotmap.svg') //map
+		d3.xml('images/gotmap.svg') //map
 		.then(datamap => {
 
 		var filterGroups = ['No Filter','Season','Books','Character','House', 'Killing Method',
