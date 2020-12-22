@@ -1567,7 +1567,7 @@ data = d3.csv(file, function(d) {
 			tooltip
 				.style("position","absolute")
 				.style('left', d.x - 900+ 'px')
-				.style('top', d.y - 20 + 'px')
+				.style('top', d.y - 120 + 'px')
 		}
 
 		function mouseleave4(d){
@@ -1671,7 +1671,7 @@ data = d3.csv(file, function(d) {
 						.style('visibility','visible')
 						.style("position","absolute")
 						.style('left', d.x - 900+ 'px')
-						.style('top', d.y - 20 + 'px')
+						.style('top', d.y - 180 + 'px')
 					}
 				}
 	
