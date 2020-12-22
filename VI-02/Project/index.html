@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+  <style>
+
+  .axis {
+    font: 15px sans-serif;
+  }
+  body{
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+  }
+
+  .dropdown-submenu {
+  position: relative;
+}
+
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+}
+
+.switch-field {
+	display: flex;
+  position: absolute; 
+  white-space:nowrap;
+	margin-bottom: 36px;
+	overflow: hidden;
+}
+
+.switch-field input {
+	position: absolute !important;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	width: 1px;
+	border: 0;
+	overflow: hidden;
+}
+
+.switch-field label {
+	background-color: #e4e4e4;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 15px;
+	line-height: 1;
+	text-align: center;
+	padding: 8px 16px;
+	margin-right: -1px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	transition: all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+	cursor: pointer;
+}
+
+.switch-field input:checked + label {
+	background-color: #dc8686;
+	box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+	border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+	border-radius: 0 4px 4px 0;
+}
+
+#circle circle {
+  fill: none;
+  pointer-events: all;
+}
+path.group {
+  fill-opacity: .8;
+}
+path.chord {
+  fill-opacity: .8;
+  stroke: #000;
+  stroke-width: .25px;
+}
+#circle:hover path.fade {
+  display: none;
+}
+
+@font-face {
+  font-family: 'gotFont';
+  src: url("images/Game_of_Thrones.ttf");
+}
+
+.title {
+  font-family: 'gotFont';
+}
+
+.map {
+    overflow: hidden;
+    position:fixed;
+}
+
+  </style>
+</head>
+
+<body>
+  
+  <div class="title" style="font-weight: bold; font-size: 20px; position: fixed; top: 15px; left: 620px">Deaths of Game of Thrones</div>
+  <div id="heatmap" style="position: fixed; top: -30px; bottom:0px; left: -20px; right: 0px"></div>
+  <div id="tree_map" style="position: fixed; top: 50px; bottom:0px; left: 400px; right: 0px;"></div>
+  <div id="barchart" style="position: fixed; top: 350px; bottom:0px; left: 0px; right: 0px;"></div>
+  <div id="map" class ="map" style="max-width: 502px; max-height: 375px; position: fixed; top: 350px; bottom:0px; left: 404px; right: 0px;"></div>
+  <div id="chord" style="position: fixed; top: 70px; bottom:0px; left: 920px; right: 0px"></div>
+  <select id="selectButton" style="max-height: 30px; position: fixed; top: 5px; bottom:0px; left: 200px; right: 0px;"></select>
+  
+  <select id="secondSelectButton" style="max-height: 30px; position: fixed; top: 5px; bottom:0px; left: 330px; right: 0px;"></select>
+
+  <form class="switch" style="max-height: 30px; max-width: 100px; position: fixed; top: 5px; bottom:0px; left: 50px; right: 0px;">
+    <div class="switch-field">
+      <input type="radio" id="radiodeaths" name="switch-one" value="yes" checked/>
+      <label for="radiodeaths" id="radiodeathslabel">Deaths</label>
+      <input type="radio" id="radiokills" name="switch-one" value="0"/>
+      <label for="radiokills" id="radiokillslabel">Kills</label>
+    </div>
+  </form>
+
+  <div id="filters" style="max-height: 30px; position: fixed; top: 10px; bottom:0px; left: 1100px; right: 0px;"></div>
+
+<script src="data/d3.js"></script>
+<script src="data/colorscale.js"></script>
+<script src='main.js'></script>
+
+</body>
