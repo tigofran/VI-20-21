@@ -45,7 +45,7 @@ data = d3.csv(file, function(d) {
 		.then(datamap => {
 
 		var filterGroups = ['No Filter','Season','Books','Character','House', 'Killing Method',
-							'Gender','Nobility','Animals']
+							'Gender','Nobility','Animals','Location']
 		var totalByEpisode = [];
 		var selectedGroup;
 		var selectedSecond;
@@ -78,6 +78,8 @@ data = d3.csv(file, function(d) {
 		var animalDeathData = d3.map(data.filter(function(d) {return d.allegiance == 'Animal'}), function(d){return d.character;})
 		var animalKillData = d3.map(data.filter(function(d) {return d.killershouse == 'Animal'}), function(d){return d.killer;})
 		var animalValues = Array.from([...new Set(['All Animals',...animalDeathData,...animalKillData])]).sort();
+		var locationData = d3.map(data, function(d){return d.location;})
+		var locationValues = Array.from([...new Set(locationData)]).sort();
 		var locationCounts = rollupDict(d3.map(data,function(d){return d.location}))
 
 		var secondDropdown = d3.select('#secondSelectButton')
@@ -893,6 +895,9 @@ data = d3.csv(file, function(d) {
 								break;
 							case 'Animals':
 								return animalValues;
+								break;
+							case 'Location':
+								return locationValues;
 								break;
 					}
 				})
